@@ -43,4 +43,4 @@ export const HighImpactHero: React.FC<Page['hero']> = ({ links, media, richText 
       </div>
     </div>
   )
-}
+} 

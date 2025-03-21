@@ -12,6 +12,11 @@ import { slugField } from '@/fields/slug'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { revalidateDelete, revalidatePage } from './hooks/revalidatePage'
+import { InternalPage } from '../../blocks/InternalPage/config'
+import { LogoStrip } from '../../blocks/LogoStrip/config'
+import { Testimonials } from '../../blocks/Testimonials/config'
+import { Kontaktai } from '../../blocks/Kontaktai/config'
+import WelcomeBlock from '../../blocks/WelcomeBlock/config'
 
 import {
   MetaDescriptionField,
@@ -68,14 +73,14 @@ export const Pages: CollectionConfig<'pages'> = {
       tabs: [
         {
           fields: [hero],
-          label: 'Hero',
+          label: 'Hero'
         },
         {
           fields: [
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, InternalPage, LogoStrip, Testimonials, Kontaktai, WelcomeBlock],
               required: true,
               admin: {
                 initCollapsed: true,
@@ -99,13 +104,9 @@ export const Pages: CollectionConfig<'pages'> = {
             MetaImageField({
               relationTo: 'media',
             }),
-
             MetaDescriptionField({}),
             PreviewField({
-              // if the `generateUrl` function is configured
               hasGenerateFn: true,
-
-              // field paths to match the target field for data
               titlePath: 'meta.title',
               descriptionPath: 'meta.description',
             }),
@@ -137,3 +138,5 @@ export const Pages: CollectionConfig<'pages'> = {
     maxPerDoc: 50,
   },
 }
+
+export default Pages;

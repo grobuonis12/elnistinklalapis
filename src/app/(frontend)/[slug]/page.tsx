@@ -6,12 +6,15 @@ import { getPayload, type RequiredDataFromCollectionSlug } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import { homeStatic } from '@/endpoints/seed/home-static'
-
 import { RenderBlocks } from '@/blocks/RenderBlocks'
-import { RenderHero } from '@/heros/RenderHero'
 import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
+import LogoStripComponent from '@/components/LogoStrip'
+import TestimonialSlider from '@/components/Testimonials/TestimonialSlider'
+import KontaktaiComponent from '@/components/KontaktaiComponent'
+import WelcomeBlockComponent from '@/components/WelcomeBackComponent'
+import InternalPageComponent from '@/components/InternalPageComponent'
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
@@ -43,38 +46,53 @@ type Args = {
   }>
 }
 
+type PageType = RequiredDataFromCollectionSlug<'pages'> & {
+  logos?: Array<{
+    logo: {
+      url: string;
+      alt?: string;
+    }
+  }>;
+}
+
+type BlockType = {
+  blockType: string;
+  [key: string]: any;
+}
+
+type PageRendererProps = {
+  pageData: {
+    layout: BlockType[];
+  };
+}
+
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { slug = 'home' } = await paramsPromise
   const url = '/' + slug
 
-  let page: RequiredDataFromCollectionSlug<'pages'> | null
+  let page: PageType | null
 
   page = await queryPageBySlug({
     slug,
   })
-
-  // Remove this code once your website is seeded
-  if (!page && slug === 'home') {
-    page = homeStatic
-  }
-
+  
   if (!page) {
     return <PayloadRedirects url={url} />
   }
 
-  const { hero, layout } = page
+  const { layout, logos } = page
 
   return (
-    <article className="pt-16 pb-24">
+    <article className="pb-24">
       <PageClient />
-      {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
 
-      <RenderHero {...hero} />
       <RenderBlocks blocks={layout} />
+      <LogoStripComponent logos={logos || []} />
+      <PageRenderer pageData={{ layout }} />
     </article>
   )
 }
@@ -104,7 +122,36 @@ const queryPageBySlug = cache(async ({ slug }: { slug: string }) => {
         equals: slug,
       },
     },
+    select: {
+      layout: true,
+      logos: true, 
+    },
   })
 
   return result.docs?.[0] || null
 })
+
+// rodymui
+
+export function PageRenderer({ pageData }: PageRendererProps) {
+  return (
+    <div>
+      {pageData.layout.map((block: BlockType, index: number) => {
+        switch (block.blockType) {
+          case "logoStrip":
+            return <LogoStripComponent key={index} logos={block.logos} />;
+          case "testimonials":
+            return <TestimonialSlider key={index} testimonials={block.testimonials} />;
+          case "kontaktai":
+            return <KontaktaiComponent companyName={''} companyCode={''} vatCode={''} bankAccount={''} bankName={''} phone={''} email={''} key={index} {...block} />;
+          case "welcomeBlock":
+            return <WelcomeBlockComponent key={index} title={block.title || ''} buttons={block.buttons || []} {...block} />;
+          case "internalPage":
+            return <InternalPageComponent key={index} title={block.title} description={block.description} embedForm={block.embedForm} />;
+          default:
+            return null;
+        }
+      })}
+    </div>
+  );
+}

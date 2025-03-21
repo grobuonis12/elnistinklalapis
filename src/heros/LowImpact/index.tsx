@@ -22,4 +22,4 @@ export const LowImpactHero: React.FC<LowImpactHeroType> = ({ children, richText 
       </div>
     </div>
   )
-}
+} 

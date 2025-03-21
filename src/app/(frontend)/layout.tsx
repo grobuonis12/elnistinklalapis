@@ -6,18 +6,25 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
-import { Footer } from '@/Footer/Component'
-import { Header } from '@/Header/Component'
+import Footer from '@/Footer/Component'
+import Header from '@/components/Header'
+import { Newsletter } from '@/components/Newsletter'
 import { Providers } from '@/providers'
-import { InitTheme } from '@/providers/Theme/InitTheme'
+import InitTheme from '@/providers/Theme/InitTheme'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { draftMode } from 'next/headers'
+import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
 
+export const getFooterData = async () => {
+  return await getCachedGlobal('footer')()
+}
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  const footerData = await getFooterData()
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -33,10 +40,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               preview: isEnabled,
             }}
           />
-
           <Header />
-          {children}
-          <Footer />
+          <div className="layout-container w-full mx-auto flex flex-col min-h-screen">
+            <main className="flex-1 flex flex-col">
+              {children}
+            </main>
+            <Footer footer={footerData} />
+            <Newsletter />
+          </div>
         </Providers>
       </body>
     </html>
