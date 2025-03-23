@@ -47,6 +47,12 @@
     --success: 196 52% 74%;
     --warning: 34 89% 85%;
     --error: 10 100% 86%;
+
+    /* Mobile safe area insets */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
   }
 
   [data-theme='dark'] {
@@ -82,113 +88,87 @@
     --warning: 34 51% 25%;
     --error: 10 39% 43%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
+    margin: 0;
+    padding: 0;
   }
   body {
     @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    /* Add mobile viewport height fix */
+    min-height: -webkit-fill-available;
+  }
+  html {
+    height: -webkit-fill-available;
   }
   body, html {
-    margin: 0; /* Restore default margin */
-    padding: 0; /* Restore default padding */
+    margin: 0;
+    padding: 0;
   }
   section {
-    margin-bottom: unset; /* Restore default behavior */
-    padding-bottom: unset; /* Restore default behavior */
+    margin: 0;
+    padding: 0;
+    display: block;
+    line-height: 0;
+  }
+  footer {
+    margin: 0;
+    padding: 0;
+    display: block;
+    line-height: normal;
   }
 }
 
 @layer components {
-  /* Footer styles */
-  .footer {
-    @apply bg-black text-white py-12; /* Ensure no margin or padding above */
-    margin-top: 0; /* Explicitly remove margin above */
-    padding-top: 0; /* Explicitly remove padding above */
+  #kontaktai {
+    margin-bottom: -4px !important;
+    padding-bottom: 0 !important;
+    line-height: 0;
   }
-
-  .footer-container {
-    @apply max-w-7xl mx-auto px-6;
+  
+  #kontaktai > * {
+    line-height: normal;
   }
-
-  .footer-grid {
-    @apply grid grid-cols-1 md:grid-cols-3 gap-12;
-  }
-
-  .footer-column {
-    @apply flex flex-col gap-4;
-  }
-
-  .footer-logo {
-    @apply w-auto h-auto;
-  }
-
-  .footer-description {
-    @apply text-sm max-w-[300px] mt-2 text-gray-300;
-  }
-
-  .footer-copyright {
-    @apply text-sm text-gray-400;
-  }
-
-  .footer-title {
-    @apply text-xl font-semibold mb-4 text-white;
-  }
-
-  .footer-posts {
-    @apply flex flex-col gap-4;
-  }
-
-  .footer-post {
-    @apply flex items-start gap-3;
-  }
-
-  .footer-post-number {
-    @apply flex-shrink-0 w-6 h-6 bg-white rounded-full flex items-center justify-center text-black font-bold;
-  }
-
-  .footer-post-content {
-    @apply flex flex-col;
-  }
-
-  .footer-post-title {
-    @apply text-sm font-medium text-gray-200;
-  }
-
-  .footer-post-date {
-    @apply text-xs text-gray-400;
-  }
-
-  .footer-nav {
-    @apply flex flex-wrap gap-2;
-  }
-
-  .footer-nav-link {
-    @apply bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-colors flex items-center gap-2;
-  }
-
-  .footer-nav-dot {
-    @apply w-2 h-2 rounded-full bg-red-500;
-  }
-
-  /* Tag cloud button styles matching WelcomeBlock */
-  .footer-tag-cloud {
-    @apply flex flex-wrap gap-3;
-  }
-
-  .footer-tag-button {
-    @apply bg-white hover:bg-gray-100 text-black px-4 py-2 rounded-full text-sm transition-all duration-200 flex items-center gap-2 shadow-[2px_2px_0px_rgba(0,0,0,0.25)] hover:scale-105;
-  }
-
-  .footer-tag-dot {
-    @apply w-2 h-2 rounded-full;
-  }
-
+  
   .hero {
-    margin-bottom: 0; /* Explicitly remove margin below */
-    padding-bottom: 0; /* Explicitly remove padding below */
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+/* Mobile-friendly utility classes */
+@layer utilities {
+  .mobile-safe-area {
+    padding-top: var(--safe-area-inset-top);
+    padding-bottom: var(--safe-area-inset-bottom);
+    padding-left: var(--safe-area-inset-left);
+    padding-right: var(--safe-area-inset-right);
+  }
+
+  .touch-target-min {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .mobile-text {
+    font-size: 16px; /* Minimum readable size on mobile */
+    line-height: 1.5;
+  }
+
+  .mobile-padding {
+    padding: 1rem;
+  }
+
+  .mobile-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent text size adjustment on orientation change */
+  .text-size-adjust {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 }
 

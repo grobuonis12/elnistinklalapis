@@ -33,7 +33,7 @@ export default function WelcomeBackComponent({ title, buttons }: WelcomeBlockPro
       </div>
   
       {/* Buttons Grid */}
-      <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-4xl px-4">
+      <div className="flex flex-wrap justify-center gap-6 mt-8 w-full max-w-6xl px-4">
         {buttonList.map((button, index) => (
           <Link 
             key={index} 
@@ -69,7 +69,7 @@ export default function WelcomeBackComponent({ title, buttons }: WelcomeBlockPro
               </div>
   
               {/* Button Text */}
-              <span className="text-[0.875rem] font-normal tracking-[0.05em]">
+              <span className="text-xs uppercase tracking-[0.2em] font-medium">
                 {button.text}
               </span>
             </div>

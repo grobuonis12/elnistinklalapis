@@ -17,8 +17,8 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
   }
 
   return (
-    <div className="container my-16">
-      <div className="grid grid-cols-4 lg:grid-cols-12 gap-y-8 gap-x-16">
+    <div className="container px-4 sm:px-6 lg:px-8 my-8 sm:my-12 lg:my-16">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-y-6 sm:gap-y-8 lg:gap-y-12 gap-x-6 sm:gap-x-8 lg:gap-x-16">
         {columns &&
           columns.length > 0 &&
           columns.map((col, index) => {
@@ -26,14 +26,33 @@ export const ContentBlock: React.FC<ContentBlockProps> = (props) => {
 
             return (
               <div
-                className={cn(`col-span-4 lg:col-span-${colsSpanClasses[size!]}`, {
-                  'md:col-span-2': size !== 'full',
-                })}
+                className={cn(
+                  'col-span-1',
+                  {
+                    'sm:col-span-2 lg:col-span-12': size === 'full',
+                    'lg:col-span-6': size === 'half',
+                    'lg:col-span-4': size === 'oneThird',
+                    'lg:col-span-8': size === 'twoThirds',
+                  },
+                )}
                 key={index}
               >
-                {richText && <RichText data={richText} enableGutter={false} />}
+                {richText && (
+                  <RichText 
+                    data={richText} 
+                    enableGutter={false}
+                    className="mobile-text"
+                  />
+                )}
 
-                {enableLink && <CMSLink {...link} />}
+                {enableLink && (
+                  <div className="mt-4">
+                    <CMSLink 
+                      {...link} 
+                      className="touch-target-min mobile-tap-highlight inline-block"
+                    />
+                  </div>
+                )}
               </div>
             )
           })}

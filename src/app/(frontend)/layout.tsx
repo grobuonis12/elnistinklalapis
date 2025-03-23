@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
 import { GeistSans } from 'geist/font/sans'
+import { Montserrat } from 'next/font/google'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
@@ -17,6 +18,11 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+})
 
 export const getFooterData = async () => {
   return await getCachedGlobal('footer')()

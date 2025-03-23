@@ -114,28 +114,40 @@ export const FormBlock: React.FC<
   )
 
   return (
-    <div className="container lg:max-w-[48rem]">
+    <div className="container px-4 sm:px-6 lg:px-8 lg:max-w-[48rem] mobile-safe-area">
       {enableIntro && introContent && !hasSubmitted && (
-        <RichText className="mb-8 lg:mb-12" data={introContent} enableGutter={false} />
+        <RichText 
+          className="mb-6 sm:mb-8 lg:mb-12 mobile-text" 
+          data={introContent} 
+          enableGutter={false} 
+        />
       )}
-      <div className="p-4 lg:p-6 border border-border rounded-[0.8rem]">
+      <div className="p-4 sm:p-6 lg:p-8 border border-border rounded-lg sm:rounded-xl shadow-sm">
         <FormProvider {...formMethods}>
           {!isLoading && hasSubmitted && confirmationType === 'message' && (
-            <RichText data={confirmationMessage} />
+            <RichText 
+              data={confirmationMessage}
+              className="mobile-text"
+            />
           )}
-          {isLoading && !hasSubmitted && <p>Loading, please wait...</p>}
-          {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
+          {isLoading && !hasSubmitted && (
+            <p className="text-base sm:text-lg mobile-text">Loading, please wait...</p>
+          )}
+          {error && (
+            <div className="p-4 bg-error/30 border border-error rounded-lg mb-4 mobile-text">
+              {`${error.status || '500'}: ${error.message || ''}`}
+            </div>
+          )}
           {!hasSubmitted && (
-            <form id={formID} onSubmit={handleSubmit(onSubmit)}>
-              <div className="mb-4 last:mb-0">
+            <form id={formID} onSubmit={handleSubmit(onSubmit)} className="w-full">
+              <div className="space-y-6">
                 {formFromProps &&
                   formFromProps.fields &&
                   formFromProps.fields?.map((field, index) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const Field: React.FC<any> = fields?.[field.blockType as keyof typeof fields]
                     if (Field) {
                       return (
-                        <div className="mb-6 last:mb-0" key={index}>
+                        <div className="w-full" key={index}>
                           <Field
                             form={formFromProps}
                             {...field}
@@ -151,9 +163,16 @@ export const FormBlock: React.FC<
                   })}
               </div>
 
-              <Button form={formID} type="submit" variant="default">
-                {submitButtonLabel}
-              </Button>
+              <div className="mt-8">
+                <Button 
+                  form={formID} 
+                  type="submit" 
+                  variant="default"
+                  className="w-full sm:w-auto min-h-[44px] text-base mobile-tap-highlight"
+                >
+                  {submitButtonLabel}
+                </Button>
+              </div>
             </form>
           )}
         </FormProvider>

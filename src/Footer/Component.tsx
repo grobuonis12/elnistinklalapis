@@ -122,43 +122,42 @@ const FooterComponent = ({ footer }: { footer: Footer }) => {
   };
 
   return (
-    <footer className="footer mt-0">
-      <div className="footer-container">
-        <div className="footer-grid">
+    <footer className="bg-black">
+      <div className="container mx-auto px-4 py-24">
+        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16">
           {/* Left side - Logo and description */}
-          <div className="footer-column">
-            <Link href="/">
+          <div className="flex flex-col items-start">
+            <Link href="/" className="mb-6 inline-block">
               <Image 
                 src="/media/elnislogofooter.png" 
                 alt="Elnis" 
-                width={200}
-                height={80}
-                className="footer-logo"
+                width={140}
+                height={56}
+                className="w-auto h-auto"
                 priority
               />
             </Link>
-            <div className="footer-description">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in libero justo. Interdum et Phasellus in libero justo.
-              </p>
-            </div>
-            <p className="footer-copyright">
+            <p className="text-gray-400 text-sm mb-4 max-w-sm">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in libero justo. 
+              Interdum et Phasellus in libero justo.
+            </p>
+            <p className="text-gray-500 text-sm">
               @ELNIS, 2024
             </p>
           </div>
 
           {/* Middle - Recent Posts */}
-          <div className="footer-column">
-            <h3 className="footer-title">Naujausi straipsniai</h3>
-            <div className="footer-posts">
+          <div className="flex flex-col items-start">
+            <h3 className="text-xl font-semibold text-white mb-6">Naujausi straipsniai</h3>
+            <div className="space-y-6 w-full">
               {recentPosts.map((post, index) => (
-                <div key={post.id} className="footer-post">
-                  <div className="footer-post-number">
+                <div key={post.id} className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-6 h-6 bg-white rounded-full flex items-center justify-center text-black text-sm font-bold">
                     {index + 1}
                   </div>
-                  <div className="footer-post-content">
-                    <h4 className="footer-post-title">{post.title}</h4>
-                    <p className="footer-post-date">{post.date}</p>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-white text-sm font-medium">{post.title}</h4>
+                    <p className="text-gray-400 text-xs">{post.date}</p>
                   </div>
                 </div>
               ))}
@@ -166,8 +165,8 @@ const FooterComponent = ({ footer }: { footer: Footer }) => {
           </div>
 
           {/* Right side - Tag Cloud */}
-          <div className="footer-column">
-            <h2 className="text-2xl font-bold text-white mb-6">
+          <div className="flex flex-col items-start">
+            <h2 className="text-xl font-semibold text-white mb-6">
               Žymų debesis
             </h2>
             <div className="flex flex-wrap gap-3">
@@ -175,7 +174,7 @@ const FooterComponent = ({ footer }: { footer: Footer }) => {
                 <Link
                   key={button.id || index}
                   href={button.link}
-                  className="bg-white hover:bg-gray-100 text-black px-4 py-2 rounded-full text-sm transition-colors duration-200 flex items-center gap-2 shadow-[2px_2px_0px_rgba(0,0,0,0.25)]"
+                  className="bg-white hover:bg-gray-100 text-black px-4 py-2 rounded-full text-sm transition-all duration-200 flex items-center gap-2 shadow-[2px_2px_0px_rgba(0,0,0,0.25)] hover:scale-105"
                 >
                   <span 
                     className="w-2 h-2 rounded-full" 

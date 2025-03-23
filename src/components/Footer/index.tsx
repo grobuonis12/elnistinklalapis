@@ -73,13 +73,13 @@ const TagCloud: React.FC<{ buttons: ButtonProps[] }> = ({ buttons }) => {
         <Link 
           key={button.id || index} 
           href={button.link}
-          className="flex items-center space-x-2 px-4 py-2 bg-white rounded-full hover:scale-105 transition-all"
+          className="flex items-center space-x-2 px-4 py-2 bg-white rounded-full text-xs uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all"
         >
           <div
             className="w-2 h-2 rounded-full"
             style={{ backgroundColor: button.hexColor || "#FF5733" }}
           />
-          <span className="text-sm">{button.text}</span>
+          <span>{button.text}</span>
         </Link>
       ))}
     </div>
@@ -92,7 +92,7 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
   const tagButtons = footer.sections?.find(s => s.type === 'tag_cloud')?.buttons || [];
 
   return (
-    <footer className="bg-black text-white py-16">
+    <footer className="bg-black text-white pb-8 relative">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
           {/* Logo and Description */}
