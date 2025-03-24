@@ -199,7 +199,6 @@ export interface Page {
     | {
         title: string;
         description: string;
-        style?: ('default' | 'modern' | 'minimal') | null;
         /**
          * Paste the AI-generated form embed code here
          */
@@ -261,6 +260,7 @@ export interface Page {
         blockName?: string | null;
         blockType: 'welcomeBlock';
       }
+    | WordPressBlogType
   )[];
   meta?: {
     title?: string | null;
@@ -798,6 +798,23 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WordPressBlogType".
+ */
+export interface WordPressBlogType {
+  blockName?: string | null;
+  /**
+   * The WordPress REST API URL (e.g., https://example.com/wp-json/wp/v2/posts)
+   */
+  wordpressUrl: string;
+  /**
+   * Number of posts to display per page (1-50)
+   */
+  postsPerPage?: number | null;
+  id?: string | null;
+  blockType: 'wordPressBlog';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1091,7 +1108,6 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               title?: T;
               description?: T;
-              style?: T;
               embedForm?: T;
               id?: T;
               blockName?: T;
@@ -1152,6 +1168,7 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        wordPressBlog?: T | WordPressBlogTypeSelect<T>;
       };
   meta?:
     | T
@@ -1250,6 +1267,16 @@ export interface FormBlockSelect<T extends boolean = true> {
   introContent?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WordPressBlogType_select".
+ */
+export interface WordPressBlogTypeSelect<T extends boolean = true> {
+  blockName?: T;
+  wordpressUrl?: T;
+  postsPerPage?: T;
+  id?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -17,6 +17,7 @@ import { LogoStrip } from '../../blocks/LogoStrip/config'
 import { Testimonials } from '../../blocks/Testimonials/config'
 import { Kontaktai } from '../../blocks/Kontaktai/config'
 import WelcomeBlock from '../../blocks/WelcomeBlock/config'
+import { WordPressBlogBlock } from '../../blocks/WordPressBlog/config'
 
 import {
   MetaDescriptionField,
@@ -80,7 +81,19 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock, InternalPage, LogoStrip, Testimonials, Kontaktai, WelcomeBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                FormBlock,
+                InternalPage,
+                LogoStrip,
+                Testimonials,
+                Kontaktai,
+                WelcomeBlock,
+                WordPressBlogBlock
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

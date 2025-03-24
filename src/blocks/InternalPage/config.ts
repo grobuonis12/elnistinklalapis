@@ -20,26 +20,6 @@ export const InternalPage: Block = {
       required: true,
     },
     {
-      name: "style",
-      type: "select",
-      label: "Page Style",
-      defaultValue: "default",
-      options: [
-        {
-          label: "Default",
-          value: "default",
-        },
-        {
-          label: "Modern",
-          value: "modern",
-        },
-        {
-          label: "Minimal",
-          value: "minimal",
-        }
-      ],
-    },
-    {
       name: "embedForm",
       type: "text",
       label: "Embed Form Code",

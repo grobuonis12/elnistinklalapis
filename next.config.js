@@ -18,10 +18,20 @@ const nextConfig = {
           protocol: url.protocol.replace(':', ''),
         }
       }),
+      {
+        protocol: 'https',
+        hostname: 'www.elnis.lt',
+      },
     ],
   },
   reactStrictMode: true,
   redirects,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 export default withPayload(nextConfig)

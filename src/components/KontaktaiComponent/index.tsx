@@ -32,7 +32,7 @@ export default function KontaktaiComponent({
       <div className="w-full md:w-1/2 bg-[#ff99cc] p-4 md:p-8 text-black flex flex-col justify-center">
         <div className="max-w-[300px] mx-auto w-full">
           {/* Title */}
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 tracking-wide mobile-text">Kontaktai</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6 tracking-wide mobile-text -mt-4">Kontaktai</h2>
 
           {/* Icon */}
           <div className="mb-6 flex justify-start">
