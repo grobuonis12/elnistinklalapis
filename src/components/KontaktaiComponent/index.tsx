@@ -26,49 +26,49 @@ export default function KontaktaiComponent({
   return (
     <section
       id="kontaktai"
-      className="flex flex-col md:flex-row w-full max-w-7xl mx-auto overflow-hidden rounded-xl border-4 border-black mb-0 pb-0 mobile-safe-area"
+      className="flex flex-col md:flex-row w-full max-w-7xl mx-auto overflow-hidden rounded-xl border-2 border-black"
     >
       {/* Left Side */}
-      <div className="w-full md:w-1/2 bg-[#ff99cc] p-4 md:p-8 text-black flex flex-col justify-center">
-        <div className="max-w-[300px] mx-auto w-full">
+      <div className="w-full md:w-1/2 bg-[#ff99cc] flex items-center justify-center p-8 md:p-12 md:border-r-2 border-black">
+        <div className="flex flex-col items-start w-full max-w-[400px] pl-8 md:pl-16">
           {/* Title */}
-          <h2 className="text-2xl md:text-3xl font-bold mb-6 tracking-wide mobile-text -mt-4">Kontaktai</h2>
+          <h2 className="text-2xl md:text-4xl font-bold mb-8 md:mb-10 text-black/70">Kontaktai</h2>
 
           {/* Icon */}
-          <div className="mb-6 flex justify-start">
+          <div className="mb-3">
             <Image
               src="/media/kontaktuminilogo.png"
               alt="Kontaktai Mini Logo"
-              width={32}
-              height={32}
-              className="w-auto h-auto"
+              width={64}
+              height={64}
+              className="object-contain w-16 h-16"
             />
           </div>
 
           {/* Contact Details */}
-          <div className="space-y-4 md:space-y-6 text-base leading-relaxed mobile-text">
-            <p className="font-bold text-lg">{companyName}</p>
-            <div className="space-y-1">
-              <p className="font-semibold text-sm md:text-base">Įmonės kodas:</p>
-              <p className="text-base">{companyCode}</p>
+          <div className="space-y-4 mb-10 w-full">
+            <p className="font-bold text-lg md:text-xl">{companyName}</p>
+            <div className="space-y-0.5">
+              <p className="font-semibold">Įmonės kodas:</p>
+              <p>{companyCode}</p>
             </div>
-            <div className="space-y-1">
-              <p className="font-semibold text-sm md:text-base">PVM mokėtojo kodas:</p>
-              <p className="text-base">{vatCode}</p>
+            <div className="space-y-0.5">
+              <p className="font-semibold">PVM mokėtojo kodas:</p>
+              <p>{vatCode}</p>
             </div>
-            <div className="space-y-1">
-              <p className="font-semibold text-sm md:text-base">Banko sąskaita:</p>
-              <p className="text-base">{bankAccount}</p>
-              <p className="text-base">{bankName}</p>
+            <div className="space-y-0.5">
+              <p className="font-semibold">Banko sąskaita:</p>
+              <p>{bankAccount}</p>
+              <p>{bankName}</p>
             </div>
           </div>
 
           {/* Contact Buttons */}
-          <div className="flex gap-4 mt-6">
-            <button className="whitespace-nowrap px-4 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium touch-target-min mobile-tap-highlight">
+          <div className="flex flex-col md:flex-row gap-4 w-full">
+            <button className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium">
               {phone}
             </button>
-            <button className="whitespace-nowrap px-4 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium touch-target-min mobile-tap-highlight">
+            <button className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium">
               {email}
             </button>
           </div>
@@ -76,18 +76,18 @@ export default function KontaktaiComponent({
       </div>
 
       {/* Right Side */}
-      <div className="w-full md:w-1/2 bg-[#FFD700] p-4 md:p-8 flex items-center justify-center">
+      <div className="w-full md:w-1/2 bg-[#FFD700] p-4 md:p-8">
         {illustration?.url ? (
           <Image 
             src={illustration.url} 
             alt="Kontaktai Illustration" 
             width={500} 
             height={500} 
-            className="w-full h-auto object-contain" 
-            priority // Load image immediately for better mobile experience
+            className="w-full h-auto max-h-[300px] md:max-h-[500px] object-contain" 
+            priority
           />
         ) : (
-          <p className="text-gray-700 mobile-text">No image provided</p>
+          <p className="text-gray-700">No image provided</p>
         )}
       </div>
     </section>

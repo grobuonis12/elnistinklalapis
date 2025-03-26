@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { WordPressBlogComponent } from '@/blocks/WordPressBlog/Component';
+import { WordPressBlogComponent } from '@/components/WordPressBlog';
 
 interface Post {
   id: number;

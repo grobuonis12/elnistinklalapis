@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { WordPressBlogType } from './config';
+import { WordPressBlogType } from '@/blocks/WordPressBlog/config';
 
 interface Post {
   id: number;
@@ -41,7 +41,7 @@ interface Props extends WordPressBlogType {
   posts?: Post[];
 }
 
-export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPage = 10, wordpressUrl }) => {
+export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPage = 12, wordpressUrl }) => {
   const [blogPosts, setBlogPosts] = React.useState<Post[]>(posts);
   const [loading, setLoading] = React.useState(!posts.length);
   const [loadingMore, setLoadingMore] = React.useState(false);
