@@ -1,3 +1,121 @@
+# ELNIS Website
+
+🇱🇹 **LIETUVIŠKAI** | [English below](#english)
+
+## Apie projektą
+
+ELNIS - tai modernios svetainės projektas, sukurtas naudojant pažangiausias technologijas ir geriausias praktikas. Svetainė skirta efektyviam turinio valdymui ir puikiam vartotojo patirties užtikrinimui.
+
+### Pagrindinės funkcijos
+
+- 🎨 Modernus ir adaptyvus dizainas
+- 📱 Pilnai pritaikyta mobiliesiems įrenginiams
+- 🚀 Greitas puslapių užkrovimas
+- 📝 Turinio valdymo sistema
+- 🔍 SEO optimizacija
+- 🌐 Daugiakalbiškumas
+
+### Technologijos
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Payload CMS
+
+### Reikalavimai
+
+- Node.js 18+ versija
+- pnpm paketų valdymo įrankis
+
+### Diegimas
+
+1. Klonuokite repozitoriją:
+```bash
+git clone [repository-url]
+```
+
+2. Įdiekite priklausomybes:
+```bash
+pnpm install
+```
+
+3. Sukurkite .env failą:
+```bash
+cp .env.example .env
+```
+
+4. Paleiskite projektą:
+```bash
+pnpm dev
+```
+
+### Kontaktai
+
+Kilus klausimams ar problemoms, kreipkitės [kontaktinė informacija]
+
+---
+
+# 🇬🇧 ENGLISH
+
+## About the Project
+
+ELNIS is a modern website project built using cutting-edge technologies and best practices. The website is designed for efficient content management and excellent user experience.
+
+### Key Features
+
+- 🎨 Modern and responsive design
+- 📱 Fully mobile-optimized
+- 🚀 Fast page loading
+- 📝 Content Management System
+- 🔍 SEO optimization
+- 🌐 Multilingual support
+
+### Technologies
+
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Payload CMS
+
+### Requirements
+
+- Node.js version 18+
+- pnpm package manager
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone [repository-url]
+```
+
+2. Install dependencies:
+```bash
+pnpm install
+```
+
+3. Create .env file:
+```bash
+cp .env.example .env
+```
+
+4. Run the project:
+```bash
+pnpm dev
+```
+
+### Contact
+
+For questions or issues, please contact [contact information]
+
+---
+
+## Development Documentation
+
+[Original Payload CMS documentation below]
+
 # Payload Website Template
 
 This is the official [Payload Website Template](https://github.com/payloadcms/payload/blob/main/templates/website). Use it to power websites, blogs, or portfolios from small to enterprise. This repo includes a fully-working backend, enterprise-grade admin panel, and a beautifully designed, production-ready website.
