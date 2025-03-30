@@ -43,6 +43,13 @@ interface Props extends WordPressBlogType {
   posts?: Post[];
 }
 
+type ColorScheme = {
+  text: string;
+  border: string;
+  bg: string;
+  hoverBg: string;
+};
+
 export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPage = 12, wordpressUrl }) => {
   const [blogPosts, setBlogPosts] = React.useState<Post[]>([]);
   const [displayedPosts, setDisplayedPosts] = React.useState<Post[]>([]);
@@ -50,6 +57,18 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   const [loadingMore, setLoadingMore] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
+
+  const colors: readonly ColorScheme[] = [
+    { text: 'text-[#20B2AA]', border: 'border-[#20B2AA]', bg: 'bg-[#20B2AA]/5', hoverBg: 'hover:bg-[#20B2AA]' },          // Teal
+    { text: 'text-[#FF69B4]', border: 'border-[#FF69B4]', bg: 'bg-[#FF69B4]/5', hoverBg: 'hover:bg-[#FF69B4]' },  // Pink/Magenta
+    { text: 'text-[#E6B800]', border: 'border-[#E6B800]', bg: 'bg-[#E6B800]/5', hoverBg: 'hover:bg-[#E6B800]' },    // Soft Gold
+  ] as const;
+
+  const getAccentColor = (index: number): ColorScheme => {
+    const colorIndex = Math.abs(index) % colors.length;
+    // Since colors.length is 3 and we're using modulo, colorIndex will always be valid
+    return colors[colorIndex] as ColorScheme;
+  };
 
   // Restore state from session storage on mount
   React.useEffect(() => {
@@ -131,10 +150,15 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
 
   return (
     <div className={`container mx-auto px-4 ${!hasMore ? 'mb-12' : ''}`}>
-      <h1 className="mt-4 md:mt-8 mb-6 md:mb-8 text-3xl md:text-4xl font-bold text-gray-900 text-center">Blogas</h1>
-      <div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="flex justify-center mt-6 md:mt-8 mb-6 md:mb-8">
+        <div className="inline-block px-8 py-3 bg-[#FFDE59] rounded-full text-3xl md:text-4xl font-bold text-black border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] tracking-wider">
+          Blogas
+        </div>
+      </div>
+      <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-10">
         {displayedPosts.map((post, index) => {
           const imageUrl = getImageUrl(post);
+          const { text: textColor, border: borderColor, bg } = getAccentColor(index);
           return (
             <ScrollAnimation
               key={`post-${post.id}`}
@@ -143,12 +167,12 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
               offset={30}
             >
               <article
-                className="rounded-lg border border-gray-200 p-4 md:p-6 transition-shadow hover:shadow-lg flex flex-col group"
+                className={`rounded-lg border-2 ${borderColor} ${bg} p-5 flex flex-col group transition-all duration-300 ease-in-out hover:-translate-y-5 hover:shadow-lg shadow-md h-full`}
               >
                 {imageUrl && (
                   <Link 
                     href={`/blogas/${post.slug}`} 
-                    className="block relative w-full aspect-[16/9] mb-3 md:mb-4 rounded-lg overflow-hidden"
+                    className={`block relative w-full aspect-[16/9] mb-3 rounded-lg overflow-hidden`}
                     onClick={() => handlePostClick(post.id)}
                   >
                     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
@@ -161,26 +185,35 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
                     />
                   </Link>
                 )}
-                <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold">
-                  <Link
-                    href={`/blogas/${post.slug}`}
-                    className="text-gray-900 hover:text-blue-600 line-clamp-2"
-                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                    onClick={() => handlePostClick(post.id)}
+                <div className="flex-grow flex flex-col min-h-[200px]">
+                  <h2 className="mb-3 text-lg font-semibold font-['Inter']">
+                    <Link
+                      href={`/blogas/${post.slug}`}
+                      className={`${textColor} block relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-current after:origin-left after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 line-clamp-2`}
+                      dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                      onClick={() => handlePostClick(post.id)}
+                    />
+                  </h2>
+                  <div
+                    className="prose prose-sm text-[#333333] flex-grow line-clamp-3 font-['Inter'] text-sm leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                   />
-                </h2>
-                <div
-                  className="prose prose-sm text-gray-600 flex-grow line-clamp-3"
-                  dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-                />
-                <div className="mt-4 pt-4 border-t border-gray-100">
-                  <time className="text-sm text-gray-500">
-                    {new Date(post.date).toLocaleDateString('lt-LT', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </time>
+                  <div className={`mt-4 pt-4 border-t border-opacity-50 ${borderColor} flex justify-between items-center`}>
+                    <time className="text-xs text-[#666666] italic">
+                      {new Date(post.date).toLocaleDateString('lt-LT', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </time>
+                    <Link
+                      href={`/blogas/${post.slug}`}
+                      className={`${textColor} font-medium text-sm transition-all duration-200 group-hover:text-base hover:text-white ${getAccentColor(index).hoverBg} px-4 py-2 rounded`}
+                      onClick={() => handlePostClick(post.id)}
+                    >
+                      Skaityti daugiau
+                    </Link>
+                  </div>
                 </div>
               </article>
             </ScrollAnimation>
@@ -194,7 +227,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
             <button
               onClick={handleLoadMore}
               disabled={loadingMore}
-              className="px-6 py-3 bg-[#FF4500] text-white rounded-full text-base font-medium border-2 border-black hover:bg-[#FF5722] transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 text-white rounded-full text-base font-bold tracking-wider bg-[#FF4500] border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loadingMore ? 'Kraunama...' : 'Įkelti daugiau'}
             </button>
@@ -203,4 +236,4 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
       )}
     </div>
   );
-}; 
+};
