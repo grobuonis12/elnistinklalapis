@@ -25,49 +25,82 @@ interface BlogPost {
 
 interface BlogPostsProps {
   posts: BlogPost[];
+  postsPerPage?: number;
 }
 
-export default function BlogPosts({ posts }: BlogPostsProps) {
+export default function BlogPosts({ posts, postsPerPage = 12 }: BlogPostsProps) {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [displayedPosts, setDisplayedPosts] = React.useState<BlogPost[]>([]);
+
+  React.useEffect(() => {
+    if (!posts || posts.length === 0) return;
+    
+    // Ensure we show exactly 12 posts initially
+    const initialPosts = posts.slice(0, postsPerPage);
+    setDisplayedPosts(initialPosts);
+    setCurrentPage(1);
+  }, [posts, postsPerPage]);
+
   if (!posts || posts.length === 0) {
     return null;
   }
 
-  return (
-    <div className="absolute top-full left-0 w-[300px] bg-white shadow-lg rounded-lg mt-2 p-4 z-50">
-      {posts.map((post) => {
-        const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-        const formattedDate = format(new Date(post.date), 'yyyy-MM-dd', { locale: lt });
+  const handleLoadMore = () => {
+    const startIndex = currentPage * postsPerPage;
+    const endIndex = startIndex + postsPerPage;
+    const newPosts = posts.slice(startIndex, endIndex);
+    setDisplayedPosts(prev => [...prev, ...newPosts]);
+    setCurrentPage(prev => prev + 1);
+  };
 
-        return (
-          <Link 
-            key={post.id} 
-            href={post.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block mb-4 last:mb-0 hover:bg-gray-50 rounded-lg p-2 transition-colors"
-          >
-            <div className="flex gap-3">
+  const hasMorePosts = currentPage * postsPerPage < posts.length;
+
+  return (
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {displayedPosts.map((post) => {
+          const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+          const formattedDate = format(new Date(post.date), 'yyyy-MM-dd', { locale: lt });
+
+          return (
+            <Link 
+              key={post.id} 
+              href={post.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300"
+            >
               {featuredImage && (
-                <div className="flex-shrink-0">
+                <div className="relative w-full aspect-[16/9] overflow-hidden">
                   <Image
                     src={featuredImage}
                     alt=""
-                    width={60}
-                    height={60}
-                    className="rounded-lg object-cover"
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               )}
-              <div className="flex-grow">
-                <h3 className="text-sm font-medium text-gray-900 line-clamp-2" 
+              <div className="p-4">
+                <h3 className="text-lg font-medium text-gray-900 line-clamp-2 mb-2" 
                     dangerouslySetInnerHTML={{ __html: post.title.rendered }} 
                 />
-                <p className="text-xs text-gray-500 mt-1">{formattedDate}</p>
+                <p className="text-sm text-gray-500">{formattedDate}</p>
               </div>
-            </div>
-          </Link>
-        );
-      })}
+            </Link>
+          );
+        })}
+      </div>
+      
+      {hasMorePosts && (
+        <div className="mt-8 flex justify-center">
+          <button
+            onClick={handleLoadMore}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 } 

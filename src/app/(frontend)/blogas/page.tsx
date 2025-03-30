@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 async function getPosts(): Promise<Post[]> {
   try {
-    const res = await fetch('https://www.elnis.lt/wp-json/wp/v2/posts?_embed', {
+    const res = await fetch('https://www.elnis.lt/wp-json/wp/v2/posts?_embed&per_page=100', {
       next: { revalidate: 3600 }, // Revalidate every hour
     });
 
@@ -28,7 +28,7 @@ async function getPosts(): Promise<Post[]> {
     }
 
     const data = await res.json();
-    console.log('Fetched posts with media:', data); // Debug log to check media
+    console.log('Fetched all posts with media:', data); // Debug log to check media
     return data;
   } catch (error) {
     console.error('Error fetching posts:', error);

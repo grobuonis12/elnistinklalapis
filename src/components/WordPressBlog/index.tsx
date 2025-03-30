@@ -42,12 +42,54 @@ interface Props extends WordPressBlogType {
 }
 
 export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPage = 12, wordpressUrl }) => {
-  const [blogPosts, setBlogPosts] = React.useState<Post[]>(posts);
+  const [blogPosts, setBlogPosts] = React.useState<Post[]>([]);
+  const [displayedPosts, setDisplayedPosts] = React.useState<Post[]>([]);
   const [loading, setLoading] = React.useState(!posts.length);
   const [loadingMore, setLoadingMore] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [page, setPage] = React.useState(1);
-  const [hasMore, setHasMore] = React.useState(true);
+  const [currentPage, setCurrentPage] = React.useState(1);
+
+  // Restore state from session storage on mount
+  React.useEffect(() => {
+    if (!posts.length) return;
+    
+    // Restore displayed posts and current page from session storage
+    const savedDisplayedPosts = sessionStorage.getItem('blogDisplayedPosts');
+    const savedCurrentPage = sessionStorage.getItem('blogCurrentPage');
+    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
+
+    if (savedDisplayedPosts && savedCurrentPage) {
+      const parsedPosts = JSON.parse(savedDisplayedPosts);
+      setDisplayedPosts(parsedPosts);
+      setCurrentPage(parseInt(savedCurrentPage));
+    } else {
+      setDisplayedPosts(posts.slice(0, postsPerPage));
+    }
+
+    setBlogPosts(posts);
+    setLoading(false);
+
+    // Restore scroll position if it exists
+    if (savedScrollPosition) {
+      // Use setTimeout to ensure content is rendered
+      setTimeout(() => {
+        window.scrollTo({
+          top: parseInt(savedScrollPosition),
+          behavior: 'instant'
+        });
+        // Clear the saved scroll position after restoring it
+        sessionStorage.removeItem('blogScrollPosition');
+      }, 100);
+    }
+  }, [posts, postsPerPage]);
+
+  // Save state to session storage when it changes
+  React.useEffect(() => {
+    if (displayedPosts.length > 0) {
+      sessionStorage.setItem('blogDisplayedPosts', JSON.stringify(displayedPosts));
+      sessionStorage.setItem('blogCurrentPage', currentPage.toString());
+    }
+  }, [displayedPosts, currentPage]);
 
   const getImageUrl = (post: Post): string | undefined => {
     // Try different possible locations for the featured image URL
@@ -63,50 +105,23 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
            post.title.rendered;
   };
 
-  const fetchPosts = async (pageNum: number, isLoadMore = false) => {
-    try {
-      if (isLoadMore) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
-      }
-      setError(null);
-
-      const res = await fetch(`${wordpressUrl}?page=${pageNum}&per_page=${postsPerPage}&_embed`);
-      if (!res.ok) throw new Error('Failed to fetch posts');
-      
-      const data = await res.json();
-      console.log('Fetched posts with media:', data); // Debug log
-      
-      const totalPosts = parseInt(res.headers.get('X-WP-Total') || '0');
-      const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '0');
-      
-      if (isLoadMore) {
-        setBlogPosts(prev => [...prev, ...data]);
-      } else {
-        setBlogPosts(data);
-      }
-      
-      setHasMore(pageNum < totalPages);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load blog posts');
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
-
-  React.useEffect(() => {
-    if (!posts.length) {
-      fetchPosts(1);
-    }
-  }, [posts, wordpressUrl]);
-
   const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchPosts(nextPage, true);
+    setLoadingMore(true);
+    const startIndex = currentPage * postsPerPage;
+    const endIndex = startIndex + postsPerPage;
+    const newPosts = blogPosts.slice(startIndex, endIndex);
+    setDisplayedPosts(prev => [...prev, ...newPosts]);
+    setCurrentPage(prev => prev + 1);
+    setLoadingMore(false);
   };
+
+  const handlePostClick = (postId: number) => {
+    // Save current scroll position before navigating
+    const scrollPosition = window.scrollY;
+    sessionStorage.setItem('blogScrollPosition', scrollPosition.toString());
+  };
+
+  const hasMore = currentPage * postsPerPage < blogPosts.length;
 
   if (loading) {
     return (
@@ -132,27 +147,34 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     <div className="container mx-auto px-4">
       <h1 className="mt-8 mb-8 text-4xl font-bold text-gray-900 text-center">Blogas</h1>
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {blogPosts.map((post) => {
+        {displayedPosts.map((post) => {
           const imageUrl = getImageUrl(post);
           return (
             <article
               key={post.id}
-              className="rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-lg flex flex-col"
+              className="rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-lg flex flex-col group"
             >
               {imageUrl && (
-                <div className="relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden">
-                  <img
+                <Link 
+                  href={`/blogas/${post.slug}`} 
+                  className="block relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden"
+                  onClick={() => handlePostClick(post.id)}
+                >
+                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
+                  <Image
                     src={imageUrl}
                     alt={getImageAlt(post)}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                </div>
+                </Link>
               )}
               <h2 className="mb-4 text-xl font-semibold">
                 <Link
                   href={`/blogas/${post.slug}`}
                   className="text-gray-900 hover:text-blue-600"
                   dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                  onClick={() => handlePostClick(post.id)}
                 />
               </h2>
               <div
@@ -162,6 +184,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
               <Link
                 href={`/blogas/${post.slug}`}
                 className="mt-4 inline-block text-blue-600 hover:underline"
+                onClick={() => handlePostClick(post.id)}
               >
                 Skaityti daugiau →
               </Link>
