@@ -19,12 +19,13 @@ interface TestimonialSliderProps {
 export default function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 768 });
   const isNarrow = useMediaQuery({ maxWidth: 1024 });
 
   useEffect(() => {
-    console.log("Received Testimonials:", testimonials);
-  }, [testimonials]);
+    setIsClient(true);
+  }, []);
 
   const nextTestimonial = useCallback(() => {
     if (isAnimating) return;
@@ -37,15 +38,17 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
   }, [isMobile, isNarrow, testimonials.length, isAnimating]);
 
   useEffect(() => {
+    if (!isClient) return;
+    
     const timer = setInterval(() => {
       nextTestimonial();
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [nextTestimonial]);
+  }, [nextTestimonial, isClient]);
 
   if (!testimonials || testimonials.length === 0) {
-    return <p className="text-black text-center">No testimonials available.</p>;
+    return <p className="text-black dark:text-white text-center">No testimonials available.</p>;
   }
 
   const getTestimonial = (index: number): Testimonial => {
@@ -57,6 +60,48 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
       bgColor: "#ffffff",
     };
   };
+
+  // Server-side render with default values
+  if (!isClient) {
+    return (
+      <div id="atsiliepimai" className="relative w-full max-w-6xl mx-auto px-4 md:px-6">
+        <div className="flex justify-center gap-6 relative">
+          {testimonials.slice(0, 3).map((testimonial, index) => (
+            <div
+              key={`${testimonial.company}-${index}`}
+              className="relative mx-auto w-[310px] z-10"
+            >
+              <div
+                className="p-4 md:p-6 rounded-lg border-2 border-black dark:border-white relative h-full"
+                style={{
+                  width: "310px",
+                  minHeight: "240px",
+                  backgroundColor: testimonial.bgColor || "#FFDE59",
+                  color: "black",
+                  boxShadow: "6px 6px 0px black, 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -4px rgba(0, 0, 0, 0.15)",
+                }}
+              >
+                <h2 className="text-base md:text-lg font-bold uppercase mb-2 text-black dark:text-white">
+                  {testimonial.company}
+                </h2>
+                <p className="text-sm italic leading-relaxed text-black dark:text-white">
+                  "{testimonial.testimonial}"
+                </p>
+                <p className="mt-4 font-semibold text-sm md:text-base text-black dark:text-white">
+                  {testimonial.person}
+                </p>
+                {testimonial.title && (
+                  <p className="text-xs font-light text-black dark:text-white">
+                    — {testimonial.title} —
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const visibleTestimonials = (isMobile || isNarrow)
     ? [getTestimonial(currentIndex)]
@@ -82,24 +127,20 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                 initial={{ 
                   opacity: 0, 
                   x: 100,
-                  backgroundColor: "white"
                 }}
                 animate={{ 
                   opacity: 1, 
                   x: 0,
-                  backgroundColor: testimonial.bgColor || "#FFDE59",
                   transition: {
                     type: "spring",
                     stiffness: 500,
                     damping: 30,
-                    mass: 1,
-                    backgroundColor: { duration: 0.3 }
+                    mass: 1
                   }
                 }}
                 exit={{ 
                   opacity: 0, 
                   x: -100,
-                  backgroundColor: "white",
                   transition: {
                     duration: 0.3
                   }
@@ -110,10 +151,9 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                   transformStyle: "preserve-3d"
                 }}
               >
-                {/* Testimonial card */}
                 <motion.div
                   layout
-                  className="p-4 md:p-6 rounded-lg border-2 border-black relative h-full"
+                  className="p-4 md:p-6 rounded-lg border-2 border-black dark:border-white relative h-full"
                   style={{
                     width: (isMobile || isNarrow) ? "100%" : "310px",
                     minHeight: "240px",
@@ -128,26 +168,26 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                 >
                   <motion.h2 
                     layout="position"
-                    className="text-base md:text-lg font-bold uppercase mb-2"
+                    className="text-base md:text-lg font-bold uppercase mb-2 text-black dark:text-white"
                   >
                     {testimonial.company}
                   </motion.h2>
                   <motion.p 
                     layout="position"
-                    className="text-sm italic leading-relaxed"
+                    className="text-sm italic leading-relaxed text-black dark:text-white"
                   >
                     "{testimonial.testimonial}"
                   </motion.p>
                   <motion.p 
                     layout="position"
-                    className="mt-4 font-semibold text-sm md:text-base"
+                    className="mt-4 font-semibold text-sm md:text-base text-black dark:text-white"
                   >
                     {testimonial.person}
                   </motion.p>
                   {testimonial.title && (
                     <motion.p 
                       layout="position"
-                      className="text-xs font-light"
+                      className="text-xs font-light text-black dark:text-white"
                     >
                       — {testimonial.title} —
                     </motion.p>
@@ -158,7 +198,6 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
           </AnimatePresence>
         </div>
   
-        {/* Pagination Bubbles */}
         <div className="flex justify-center mt-4 space-x-3">
           {[...Array(totalBubbles)].map((_, index) => {
             const isActive = (isMobile || isNarrow)
@@ -172,17 +211,17 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                 initial={{ scale: 0.8 }}
                 animate={{ 
                   scale: isActive ? 1.2 : 1,
-                  backgroundColor: (isMobile || isNarrow) && isActive 
-                    ? (activeTestimonial.bgColor || "#FFDE59") 
-                    : isActive ? "black" : "white"
                 }}
                 transition={{
                   type: "spring",
                   stiffness: 500,
                   damping: 30,
-                  backgroundColor: { duration: 0.3 }
                 }}
-                className="h-2 md:h-3 w-2 md:w-3 rounded-full cursor-pointer border-2 border-black hover:scale-110"
+                className={`h-2 md:h-3 w-2 md:w-3 rounded-full cursor-pointer border-2 border-black dark:border-white hover:scale-110 transition-colors duration-300 ${
+                  (isMobile || isNarrow) && isActive 
+                    ? 'bg-[#FFDE59]' 
+                    : isActive ? 'bg-black' : 'bg-white'
+                }`}
                 onClick={() => {
                   if (!isAnimating) {
                     setCurrentIndex((isMobile || isNarrow) ? index : index * 3);

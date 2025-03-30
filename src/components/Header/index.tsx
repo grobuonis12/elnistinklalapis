@@ -44,7 +44,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
     <Link 
       href={href} 
       onClick={handleClick}
-      className="text-black hover:text-gray-600 transition-colors duration-200 text-base py-2 touch-target-min"
+      className="text-black hover:text-gray-600 transition-colors duration-200 text-base py-2 touch-target-min font-bold tracking-wider"
     >
       {children}
     </Link>
@@ -127,8 +127,8 @@ export default function Header() {
                   src="/media/elnislogoheader.png"
                   alt="Elnis"
                   width={100}
-                  height={37}
-                  className="w-[100px] h-auto"
+                  height={40}
+                  className="w-[125px] h-[37px]"
                   priority
                 />
               </Link>

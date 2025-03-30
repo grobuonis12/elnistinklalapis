@@ -50,6 +50,7 @@ export const LatestPosts = () => {
                 src={post._embedded['wp:featuredmedia'][0].source_url}
                 alt=""
                 fill
+                sizes="(max-width: 768px) 80px, 80px"
                 className="object-cover transition-transform group-hover:scale-110"
               />
             ) : (

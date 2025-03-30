@@ -14,6 +14,7 @@ interface Post {
   excerpt: {
     rendered: string;
   };
+  date: string;
   _embedded?: {
     'wp:featuredmedia'?: Array<{
       source_url: string;
@@ -145,19 +146,19 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="mt-8 mb-8 text-4xl font-bold text-gray-900 text-center">Blogas</h1>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <h1 className="mt-4 md:mt-8 mb-6 md:mb-8 text-3xl md:text-4xl font-bold text-gray-900 text-center">Blogas</h1>
+      <div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {displayedPosts.map((post) => {
           const imageUrl = getImageUrl(post);
           return (
             <article
               key={post.id}
-              className="rounded-lg border border-gray-200 p-6 transition-shadow hover:shadow-lg flex flex-col group"
+              className="rounded-lg border border-gray-200 p-4 md:p-6 transition-shadow hover:shadow-lg flex flex-col group"
             >
               {imageUrl && (
                 <Link 
                   href={`/blogas/${post.slug}`} 
-                  className="block relative w-full aspect-[16/9] mb-4 rounded-lg overflow-hidden"
+                  className="block relative w-full aspect-[16/9] mb-3 md:mb-4 rounded-lg overflow-hidden"
                   onClick={() => handlePostClick(post.id)}
                 >
                   <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
@@ -166,48 +167,44 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
                     alt={getImageAlt(post)}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                 </Link>
               )}
-              <h2 className="mb-4 text-xl font-semibold">
+              <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold">
                 <Link
                   href={`/blogas/${post.slug}`}
-                  className="text-gray-900 hover:text-blue-600"
+                  className="text-gray-900 hover:text-blue-600 line-clamp-2"
                   dangerouslySetInnerHTML={{ __html: post.title.rendered }}
                   onClick={() => handlePostClick(post.id)}
                 />
               </h2>
               <div
-                className="prose prose-sm text-gray-600 flex-grow"
+                className="prose prose-sm text-gray-600 flex-grow line-clamp-3"
                 dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
               />
-              <Link
-                href={`/blogas/${post.slug}`}
-                className="mt-4 inline-block text-blue-600 hover:underline"
-                onClick={() => handlePostClick(post.id)}
-              >
-                Skaityti daugiau →
-              </Link>
+              <div className="mt-4 pt-4 border-t border-gray-100">
+                <time className="text-sm text-gray-500">
+                  {new Date(post.date).toLocaleDateString('lt-LT', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </time>
+              </div>
             </article>
           );
         })}
       </div>
       
       {hasMore && (
-        <div className="mt-12 flex justify-center">
+        <div className="mt-6 md:mt-8 flex justify-center">
           <button
             onClick={handleLoadMore}
             disabled={loadingMore}
-            className="rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700 disabled:bg-blue-300"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loadingMore ? (
-              <span className="flex items-center gap-2">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
-                Kraunama...
-              </span>
-            ) : (
-              'Rodyti daugiau įrašų'
-            )}
+            {loadingMore ? 'Kraunama...' : 'Įkelti daugiau'}
           </button>
         </div>
       )}

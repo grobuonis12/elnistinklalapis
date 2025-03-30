@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 interface KontaktaiProps {
   companyName: string;
@@ -65,12 +66,18 @@ export default function KontaktaiComponent({
 
           {/* Contact Buttons */}
           <div className="flex flex-col md:flex-row gap-4 w-full">
-            <button className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium">
+            <Link 
+              href={`tel:${phone}`}
+              className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium"
+            >
               {phone}
-            </button>
-            <button className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium">
+            </Link>
+            <Link
+              href={`mailto:${email}`}
+              className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium"
+            >
               {email}
-            </button>
+            </Link>
           </div>
         </div>
       </div>
