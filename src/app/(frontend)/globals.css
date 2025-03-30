@@ -197,3 +197,49 @@ html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
 }
+
+/* Scroll Animation Styles */
+.scroll-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity;
+}
+
+.scroll-animation-wrapper {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure animations work with reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-animation {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Animation Support */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Ensure animations work with reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

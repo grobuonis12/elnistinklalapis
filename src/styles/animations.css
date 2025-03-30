@@ -1,0 +1,12 @@
+/* Ensure animations work properly */
+.scroll-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  will-change: transform, opacity;
+}
+
+/* Ensure proper stacking context */
+.scroll-animation-wrapper {
+  position: relative;
+  z-index: 1;
+} 

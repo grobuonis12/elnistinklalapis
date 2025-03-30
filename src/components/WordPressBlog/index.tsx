@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { WordPressBlogType } from '@/blocks/WordPressBlog/config';
+import { ScrollAnimation } from '../ScrollAnimation';
 
 interface Post {
   id: number;
@@ -148,64 +149,72 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     <div className="container mx-auto px-4">
       <h1 className="mt-4 md:mt-8 mb-6 md:mb-8 text-3xl md:text-4xl font-bold text-gray-900 text-center">Blogas</h1>
       <div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {displayedPosts.map((post) => {
+        {displayedPosts.map((post, index) => {
           const imageUrl = getImageUrl(post);
           return (
-            <article
+            <ScrollAnimation
               key={post.id}
-              className="rounded-lg border border-gray-200 p-4 md:p-6 transition-shadow hover:shadow-lg flex flex-col group"
+              delay={index * 0.1}
+              duration={0.5}
+              offset={30}
             >
-              {imageUrl && (
-                <Link 
-                  href={`/blogas/${post.slug}`} 
-                  className="block relative w-full aspect-[16/9] mb-3 md:mb-4 rounded-lg overflow-hidden"
-                  onClick={() => handlePostClick(post.id)}
-                >
-                  <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
-                  <Image
-                    src={imageUrl}
-                    alt={getImageAlt(post)}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              <article
+                className="rounded-lg border border-gray-200 p-4 md:p-6 transition-shadow hover:shadow-lg flex flex-col group"
+              >
+                {imageUrl && (
+                  <Link 
+                    href={`/blogas/${post.slug}`} 
+                    className="block relative w-full aspect-[16/9] mb-3 md:mb-4 rounded-lg overflow-hidden"
+                    onClick={() => handlePostClick(post.id)}
+                  >
+                    <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
+                    <Image
+                      src={imageUrl}
+                      alt={getImageAlt(post)}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  </Link>
+                )}
+                <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold">
+                  <Link
+                    href={`/blogas/${post.slug}`}
+                    className="text-gray-900 hover:text-blue-600 line-clamp-2"
+                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                    onClick={() => handlePostClick(post.id)}
                   />
-                </Link>
-              )}
-              <h2 className="mb-3 md:mb-4 text-lg md:text-xl font-semibold">
-                <Link
-                  href={`/blogas/${post.slug}`}
-                  className="text-gray-900 hover:text-blue-600 line-clamp-2"
-                  dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                  onClick={() => handlePostClick(post.id)}
+                </h2>
+                <div
+                  className="prose prose-sm text-gray-600 flex-grow line-clamp-3"
+                  dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
                 />
-              </h2>
-              <div
-                className="prose prose-sm text-gray-600 flex-grow line-clamp-3"
-                dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-              />
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <time className="text-sm text-gray-500">
-                  {new Date(post.date).toLocaleDateString('lt-LT', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-              </div>
-            </article>
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <time className="text-sm text-gray-500">
+                    {new Date(post.date).toLocaleDateString('lt-LT', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </time>
+                </div>
+              </article>
+            </ScrollAnimation>
           );
         })}
       </div>
       
       {hasMore && (
         <div className="mt-6 md:mt-8 flex justify-center">
-          <button
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loadingMore ? 'Kraunama...' : 'Įkelti daugiau'}
-          </button>
+          <ScrollAnimation delay={0.2} duration={0.5} offset={30}>
+            <button
+              onClick={handleLoadMore}
+              disabled={loadingMore}
+              className="px-6 py-3 bg-[#FF4500] text-white rounded-full text-base font-medium border-2 border-black hover:bg-[#FF5722] transition-colors shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingMore ? 'Kraunama...' : 'Įkelti daugiau'}
+            </button>
+          </ScrollAnimation>
         </div>
       )}
     </div>
