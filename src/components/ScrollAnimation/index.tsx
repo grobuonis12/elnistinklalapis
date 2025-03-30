@@ -9,6 +9,8 @@ interface ScrollAnimationProps {
   delay?: number;
   duration?: number;
   offset?: number;
+  onAnimationStart?: () => void;
+  onAnimationComplete?: () => void;
 }
 
 export const ScrollAnimation = ({
@@ -17,6 +19,8 @@ export const ScrollAnimation = ({
   delay = 0,
   duration = 0.5,
   offset = 30,
+  onAnimationStart,
+  onAnimationComplete,
 }: ScrollAnimationProps) => {
   return (
     <motion.div
@@ -37,6 +41,8 @@ export const ScrollAnimation = ({
         willChange: 'transform, opacity',
         transform: 'translateZ(0)',
       }}
+      onAnimationStart={onAnimationStart}
+      onAnimationComplete={onAnimationComplete}
     >
       {children}
     </motion.div>

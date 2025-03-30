@@ -55,23 +55,15 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   React.useEffect(() => {
     if (!posts.length) return;
     
-    // Restore displayed posts and current page from session storage
-    const savedDisplayedPosts = sessionStorage.getItem('blogDisplayedPosts');
-    const savedCurrentPage = sessionStorage.getItem('blogCurrentPage');
-    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
-
-    if (savedDisplayedPosts && savedCurrentPage) {
-      const parsedPosts = JSON.parse(savedDisplayedPosts);
-      setDisplayedPosts(parsedPosts);
-      setCurrentPage(parseInt(savedCurrentPage));
-    } else {
-      setDisplayedPosts(posts.slice(0, postsPerPage));
-    }
-
+    // Store all posts for pagination
     setBlogPosts(posts);
+    // Always show first 12 posts initially
+    setDisplayedPosts(posts.slice(0, 12));
+    setCurrentPage(1);
     setLoading(false);
 
     // Restore scroll position if it exists
+    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
     if (savedScrollPosition) {
       // Use setTimeout to ensure content is rendered
       setTimeout(() => {
@@ -83,15 +75,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
         sessionStorage.removeItem('blogScrollPosition');
       }, 100);
     }
-  }, [posts, postsPerPage]);
-
-  // Save state to session storage when it changes
-  React.useEffect(() => {
-    if (displayedPosts.length > 0) {
-      sessionStorage.setItem('blogDisplayedPosts', JSON.stringify(displayedPosts));
-      sessionStorage.setItem('blogCurrentPage', currentPage.toString());
-    }
-  }, [displayedPosts, currentPage]);
+  }, [posts]);
 
   const getImageUrl = (post: Post): string | undefined => {
     // Try different possible locations for the featured image URL
@@ -109,10 +93,10 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
 
   const handleLoadMore = () => {
     setLoadingMore(true);
-    const startIndex = currentPage * postsPerPage;
-    const endIndex = startIndex + postsPerPage;
-    const newPosts = blogPosts.slice(startIndex, endIndex);
-    setDisplayedPosts(prev => [...prev, ...newPosts]);
+    const startIndex = displayedPosts.length;
+    const endIndex = startIndex + 12;
+    const nextPosts = blogPosts.slice(startIndex, endIndex);
+    setDisplayedPosts(prev => [...prev, ...nextPosts]);
     setCurrentPage(prev => prev + 1);
     setLoadingMore(false);
   };
@@ -123,7 +107,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     sessionStorage.setItem('blogScrollPosition', scrollPosition.toString());
   };
 
-  const hasMore = currentPage * postsPerPage < blogPosts.length;
+  const hasMore = displayedPosts.length < blogPosts.length;
 
   if (loading) {
     return (
@@ -146,15 +130,15 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className={`container mx-auto px-4 ${!hasMore ? 'mb-12' : ''}`}>
       <h1 className="mt-4 md:mt-8 mb-6 md:mb-8 text-3xl md:text-4xl font-bold text-gray-900 text-center">Blogas</h1>
       <div className="grid gap-4 sm:gap-6 md:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {displayedPosts.map((post, index) => {
           const imageUrl = getImageUrl(post);
           return (
             <ScrollAnimation
-              key={post.id}
-              delay={index * 0.1}
+              key={`post-${post.id}`}
+              delay={Math.min(index * 0.1, 1)}
               duration={0.5}
               offset={30}
             >
@@ -205,7 +189,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
       </div>
       
       {hasMore && (
-        <div className="mt-6 md:mt-8 flex justify-center">
+        <div className="mt-6 md:mt-8 mb-8 flex justify-center">
           <ScrollAnimation delay={0.2} duration={0.5} offset={30}>
             <button
               onClick={handleLoadMore}
