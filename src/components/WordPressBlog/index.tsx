@@ -57,6 +57,7 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   const [loadingMore, setLoadingMore] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
+  const isInitialized = React.useRef(false);
 
   const colors: readonly ColorScheme[] = [
     { text: 'text-[#20B2AA]', border: 'border-[#20B2AA]', bg: 'bg-[#20B2AA]/5', hoverBg: 'hover:bg-[#20B2AA]' },          // Teal
@@ -72,17 +73,30 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
 
   // Restore state from session storage on mount
   React.useEffect(() => {
-    if (!posts.length) return;
+    if (!posts.length || isInitialized.current) return;
     
     // Store all posts for pagination
     setBlogPosts(posts);
-    // Always show first 12 posts initially
-    setDisplayedPosts(posts.slice(0, 12));
-    setCurrentPage(1);
+
+    // Restore scroll position and current page if they exist
+    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
+    const savedCurrentPage = sessionStorage.getItem('blogCurrentPage');
+    
+    if (savedCurrentPage) {
+      const page = parseInt(savedCurrentPage);
+      setCurrentPage(page);
+      // Calculate how many posts to show based on the saved page
+      const postsToShow = page * postsPerPage;
+      setDisplayedPosts(posts.slice(0, postsToShow));
+    } else {
+      // If no saved page, show initial posts
+      setDisplayedPosts(posts.slice(0, postsPerPage));
+      setCurrentPage(1);
+    }
+
     setLoading(false);
 
     // Restore scroll position if it exists
-    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
     if (savedScrollPosition) {
       // Use setTimeout to ensure content is rendered
       setTimeout(() => {
@@ -92,9 +106,12 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
         });
         // Clear the saved scroll position after restoring it
         sessionStorage.removeItem('blogScrollPosition');
+        sessionStorage.removeItem('blogCurrentPage');
       }, 100);
     }
-  }, [posts]);
+
+    isInitialized.current = true;
+  }, [postsPerPage]); // Only depend on postsPerPage
 
   const getImageUrl = (post: Post): string | undefined => {
     // Try different possible locations for the featured image URL
@@ -121,9 +138,10 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   };
 
   const handlePostClick = (postId: number) => {
-    // Save current scroll position before navigating
+    // Save current scroll position and page number before navigating
     const scrollPosition = window.scrollY;
     sessionStorage.setItem('blogScrollPosition', scrollPosition.toString());
+    sessionStorage.setItem('blogCurrentPage', currentPage.toString());
   };
 
   const hasMore = displayedPosts.length < blogPosts.length;

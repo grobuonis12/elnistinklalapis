@@ -7,14 +7,38 @@ const SITE_URL =
 module.exports = {
   siteUrl: SITE_URL,
   generateRobotsTxt: true,
-  exclude: ['/posts-sitemap.xml', '/pages-sitemap.xml', '/*', '/posts/*'],
+  exclude: [
+    '/posts-sitemap.xml',
+    '/pages-sitemap.xml',
+    '/*',
+    '/posts/*',
+    '/admin/*',
+    '/api/*',
+    '/404',
+    '/500',
+  ],
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
-        disallow: '/admin/*',
+        disallow: ['/admin/*', '/api/*'],
       },
     ],
-    additionalSitemaps: [`${SITE_URL}/pages-sitemap.xml`, `${SITE_URL}/posts-sitemap.xml`],
+    additionalSitemaps: [
+      `${SITE_URL}/pages-sitemap.xml`,
+      `${SITE_URL}/posts-sitemap.xml`,
+    ],
+    transform: async (config, path) => {
+      return {
+        loc: path,
+        changefreq: 'daily',
+        priority: path === '/' ? 1.0 : 0.7,
+        lastmod: new Date().toISOString(),
+        alternateRefs: config.alternateRefs ?? [],
+      }
+    },
   },
+  sitemapSize: 7000,
+  generateIndexSitemap: true,
+  outDir: 'public',
 }
