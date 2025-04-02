@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import Lottie from "lottie-react";
+import contactAnimation from "../../../public/animations/c238171c-d131-4062-bbfc-17f6c92d4b17.json";
 
 interface KontaktaiProps {
   companyName: string;
@@ -83,19 +85,15 @@ export default function KontaktaiComponent({
       </div>
 
       {/* Right Side */}
-      <div className="w-full md:w-1/2 bg-[#FFD700] p-4 md:p-8">
-        {illustration?.url ? (
-          <Image 
-            src={illustration.url} 
-            alt="Kontaktai Illustration" 
-            width={500} 
-            height={500} 
-            className="w-full h-auto max-h-[300px] md:max-h-[500px] object-contain" 
-            priority
+      <div className="w-full md:w-1/2 bg-[#FFD700] p-4 md:p-8 flex items-center justify-center">
+        <div className="w-full max-w-[500px] h-[300px] md:h-[500px]">
+          <Lottie
+            animationData={contactAnimation}
+            loop={true}
+            autoplay={true}
+            className="w-full h-full"
           />
-        ) : (
-          <p className="text-gray-700">No image provided</p>
-        )}
+        </div>
       </div>
     </section>
   );
