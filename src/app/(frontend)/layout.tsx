@@ -18,6 +18,7 @@ import { getCachedGlobal } from '@/utilities/getGlobals'
 
 import './globals.css'
 import { getServerSideURL } from '@/utilities/getURL'
+import { defaultViewport } from '@/app/viewport'
 
 const montserrat = Montserrat({
   subsets: ['latin'],
@@ -27,6 +28,8 @@ const montserrat = Montserrat({
 export const getFooterData = async () => {
   return await getCachedGlobal('footer')()
 }
+
+export const viewport = defaultViewport;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()

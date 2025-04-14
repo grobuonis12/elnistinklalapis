@@ -13,20 +13,38 @@ interface LogoStripProps {
 }
 
 export default function LogoStrip({ logos = [] }: LogoStripProps) {
-  // Get the first logo if available
   const firstLogo = logos[0]?.logo;
   if (!firstLogo?.url) return null;
 
   return (
-    <div id="logoStrip" className="w-full bg-white py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <Image
-          src={firstLogo.url}
-          alt={firstLogo.alt || 'Logo'}
-          width={1200}
-          height={200}
-          className="w-full h-auto object-contain"
-        />
+    <div id="logoStrip" className="w-full bg-white py-4 overflow-hidden">
+      <div className="max-w-[1920px] mx-auto">
+        <div className="animate-marquee whitespace-nowrap flex">
+          {/* First set of logos */}
+          <div className="inline-flex min-w-fit mr-48">
+            <Image
+              src={firstLogo.url}
+              alt={firstLogo.alt || 'Logos'}
+              width={3000}
+              height={50}
+              className="h-[50px] w-auto object-contain"
+              style={{ minWidth: 'max-content' }}
+              priority
+            />
+          </div>
+          
+          {/* antras logo png */}
+          <div className="inline-flex min-w-fit mr-48">
+            <Image
+              src={firstLogo.url}
+              alt={firstLogo.alt || 'Logos'}
+              width={3000}
+              height={50}
+              className="h-[50px] w-auto object-contain"
+              style={{ minWidth: 'max-content' }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

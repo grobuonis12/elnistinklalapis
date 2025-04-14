@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image';
 import { WordPressBlogType } from '@/blocks/WordPressBlog/config';
 import { ScrollAnimation } from '../ScrollAnimation';
@@ -57,7 +56,6 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
   const [loadingMore, setLoadingMore] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const isInitialized = React.useRef(false);
 
   const colors: readonly ColorScheme[] = [
     { text: 'text-[#20B2AA]', border: 'border-[#20B2AA]', bg: 'bg-[#20B2AA]/5', hoverBg: 'hover:bg-[#20B2AA]' },          // Teal
@@ -70,48 +68,6 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     // Since colors.length is 3 and we're using modulo, colorIndex will always be valid
     return colors[colorIndex] as ColorScheme;
   };
-
-  // Restore state from session storage on mount
-  React.useEffect(() => {
-    if (!posts.length || isInitialized.current) return;
-    
-    // Store all posts for pagination
-    setBlogPosts(posts);
-
-    // Restore scroll position and current page if they exist
-    const savedScrollPosition = sessionStorage.getItem('blogScrollPosition');
-    const savedCurrentPage = sessionStorage.getItem('blogCurrentPage');
-    
-    if (savedCurrentPage) {
-      const page = parseInt(savedCurrentPage);
-      setCurrentPage(page);
-      // Calculate how many posts to show based on the saved page
-      const postsToShow = page * postsPerPage;
-      setDisplayedPosts(posts.slice(0, postsToShow));
-    } else {
-      // If no saved page, show initial posts
-      setDisplayedPosts(posts.slice(0, postsPerPage));
-      setCurrentPage(1);
-    }
-
-    setLoading(false);
-
-    // Restore scroll position if it exists
-    if (savedScrollPosition) {
-      // Use setTimeout to ensure content is rendered
-      setTimeout(() => {
-        window.scrollTo({
-          top: parseInt(savedScrollPosition),
-          behavior: 'instant'
-        });
-        // Clear the saved scroll position after restoring it
-        sessionStorage.removeItem('blogScrollPosition');
-        sessionStorage.removeItem('blogCurrentPage');
-      }, 100);
-    }
-
-    isInitialized.current = true;
-  }, [postsPerPage]); // Only depend on postsPerPage
 
   const getImageUrl = (post: Post): string | undefined => {
     // Try different possible locations for the featured image URL
@@ -127,7 +83,14 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
            post.title.rendered;
   };
 
+  const handlePostClick = (e: React.MouseEvent, slug: string) => {
+    e.preventDefault();
+    // Force a full page reload to the blog post
+    window.location.href = `/blogas/${slug}`;
+  };
+
   const handleLoadMore = () => {
+    if (loadingMore) return;
     setLoadingMore(true);
     const startIndex = displayedPosts.length;
     const endIndex = startIndex + 12;
@@ -137,12 +100,12 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     setLoadingMore(false);
   };
 
-  const handlePostClick = (postId: number) => {
-    // Save current scroll position and page number before navigating
-    const scrollPosition = window.scrollY;
-    sessionStorage.setItem('blogScrollPosition', scrollPosition.toString());
-    sessionStorage.setItem('blogCurrentPage', currentPage.toString());
-  };
+  React.useEffect(() => {
+    if (!posts.length) return;
+    setBlogPosts(posts);
+    setDisplayedPosts(posts.slice(0, postsPerPage));
+    setLoading(false);
+  }, [posts, postsPerPage]);
 
   const hasMore = displayedPosts.length < blogPosts.length;
 
@@ -184,15 +147,13 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
               duration={0.5}
               offset={30}
             >
-              <article
-                className={`rounded-lg border-2 ${borderColor} ${bg} p-5 flex flex-col group transition-all duration-300 ease-in-out hover:-translate-y-5 hover:shadow-lg shadow-md h-full`}
+              <a 
+                href={`/blogas/${post.slug}`}
+                onClick={(e) => handlePostClick(e, post.slug)}
+                className={`block rounded-lg border-2 ${borderColor} ${bg} p-5 flex flex-col group transition-all duration-300 ease-in-out hover:-translate-y-5 hover:shadow-lg shadow-md h-full`}
               >
                 {imageUrl && (
-                  <Link 
-                    href={`/blogas/${post.slug}`} 
-                    className={`block relative w-full aspect-[16/9] mb-3 rounded-lg overflow-hidden`}
-                    onClick={() => handlePostClick(post.id)}
-                  >
+                  <div className="relative w-full aspect-[16/9] mb-3 rounded-lg overflow-hidden">
                     <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300 z-10" />
                     <Image
                       src={imageUrl}
@@ -201,39 +162,30 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
-                  </Link>
-                )}
-                <div className="flex-grow flex flex-col min-h-[200px]">
-                  <h2 className="mb-3 text-lg font-semibold font-['Inter']">
-                    <Link
-                      href={`/blogas/${post.slug}`}
-                      className={`${textColor} block relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-current after:origin-left after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 line-clamp-2`}
-                      dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                      onClick={() => handlePostClick(post.id)}
-                    />
-                  </h2>
-                  <div
-                    className="prose prose-sm text-[#333333] flex-grow line-clamp-3 font-['Inter'] text-sm leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-                  />
-                  <div className={`mt-4 pt-4 border-t border-opacity-50 ${borderColor} flex justify-between items-center`}>
-                    <time className="text-xs text-[#666666] italic">
-                      {new Date(post.date).toLocaleDateString('lt-LT', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </time>
-                    <Link
-                      href={`/blogas/${post.slug}`}
-                      className={`${textColor} font-medium text-sm transition-all duration-200 group-hover:text-base hover:text-white ${getAccentColor(index).hoverBg} px-4 py-2 rounded`}
-                      onClick={() => handlePostClick(post.id)}
-                    >
-                      Skaityti daugiau
-                    </Link>
                   </div>
+                )}
+                <h2 className="mb-3 text-lg font-semibold font-['Inter']">
+                  <span className={`${textColor} block relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-current after:origin-left after:scale-x-0 group-hover:after:scale-x-100 after:transition-transform after:duration-300 line-clamp-2`}
+                    dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                  />
+                </h2>
+                <div
+                  className="prose prose-sm text-[#333333] flex-grow line-clamp-3 font-['Inter'] text-sm leading-relaxed"
+                  dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
+                />
+                <div className={`mt-4 pt-4 border-t border-opacity-50 ${borderColor} flex justify-between items-center`}>
+                  <time className="text-xs text-[#666666] italic">
+                    {new Date(post.date).toLocaleDateString('lt-LT', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
+                  </time>
+                  <span className={`${textColor} font-medium text-sm transition-all duration-200 group-hover:text-base hover:text-white ${getAccentColor(index).hoverBg} px-4 py-2 rounded`}>
+                    Skaityti daugiau
+                  </span>
                 </div>
-              </article>
+              </a>
             </ScrollAnimation>
           );
         })}

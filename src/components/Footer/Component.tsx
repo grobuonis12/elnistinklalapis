@@ -8,7 +8,11 @@ export const FooterComponent = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
         {/* Left side - Logo and description */}
         <div className="flex flex-col items-start">
-          <Link href="/" className="mb-6 inline-block">
+          <Link 
+            href="/"
+            className="mb-6 inline-block hover:opacity-80 transition-opacity duration-200"
+            aria-label="Go to homepage"
+          >
             <Image 
               src="/media/elnislogofooter.png" 
               alt="Elnis" 

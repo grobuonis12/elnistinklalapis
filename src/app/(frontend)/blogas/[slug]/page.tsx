@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
+import RelatedPosts from '@/components/RelatedPosts';
+import { defaultViewport } from '@/app/viewport';
 
 interface Post {
   id: number;
@@ -66,6 +67,8 @@ async function getRelatedPosts(currentSlug: string): Promise<Post[]> {
     .slice(0, 3);
 }
 
+export const viewport = defaultViewport;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const post = await getPost(params.slug);
@@ -89,7 +92,8 @@ export default async function BlogPostPage({ params }: Props) {
       getPost(params.slug),
       getRelatedPosts(params.slug)
     ]);
-  } catch {
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
     notFound();
   }
 
@@ -130,46 +134,7 @@ export default async function BlogPostPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: post.content.rendered }}
         />
 
-        {/* Kiti Straipsniai Section */}
-        <div className="mt-16 border-t pt-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Kiti Straipsniai</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {relatedPosts.map((relatedPost) => {
-              const relatedFeaturedImage = relatedPost._embedded?.['wp:featuredmedia']?.[0]?.source_url;
-              return (
-                <Link
-                  key={relatedPost.id}
-                  href={`/blogas/${relatedPost.slug}`}
-                  className="group block hover:shadow-lg rounded-lg overflow-hidden transition-all duration-300"
-                >
-                  {relatedFeaturedImage && (
-                    <div className="relative w-full aspect-[16/9] overflow-hidden">
-                      <Image
-                        src={relatedFeaturedImage}
-                        alt=""
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  )}
-                  <div className="p-4">
-                    <h3 
-                      className="text-lg font-medium text-gray-900 line-clamp-2 mb-2"
-                      dangerouslySetInnerHTML={{ __html: relatedPost.title.rendered }}
-                    />
-                    <time className="text-sm text-gray-500">
-                      {new Date(relatedPost.date).toLocaleDateString('lt-LT', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </time>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
+        <RelatedPosts posts={relatedPosts} />
       </div>
     </article>
   );

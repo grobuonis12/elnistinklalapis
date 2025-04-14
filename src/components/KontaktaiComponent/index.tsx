@@ -75,7 +75,9 @@ export default function KontaktaiComponent({
               {phone}
             </Link>
             <Link
-              href={`mailto:${email}`}
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=&body=`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="whitespace-nowrap px-5 py-2 bg-white rounded-full text-black text-sm border-2 border-black hover:bg-gray-50 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all font-medium"
             >
               {email}

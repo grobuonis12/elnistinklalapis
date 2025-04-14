@@ -8,42 +8,53 @@ import { usePathname, useRouter } from 'next/navigation';
 
 // Komponentas navigacijos nuorodoms
 const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const router = useRouter();
   const pathname = usePathname();
   
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    
-    // If it's not a section link, just navigate normally
-    if (!href.startsWith('#')) {
-      router.push(href);
-      return;
-    }
-    
-    // Get the section ID without the #
-    const sectionId = href === '#atsiliepimai' ? 'atsiliepimai' :
-                     href === '#musu-klientai' ? 'logoStrip' :
-                     href === '#kontaktai' ? 'kontaktai' : '';
-    
-    // If we're not on the home page, navigate there first
-    if (pathname !== '/') {
-      // Store the target section in sessionStorage
-      sessionStorage.setItem('scrollTarget', sectionId);
-      router.push('/');
-      return;
-    }
-    
-    // If we're already on the home page, just scroll
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // For section links, we need to handle them differently
+  if (href.startsWith('#')) {
+    const handleSectionClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      
+      // Get the section ID without the #
+      const sectionId = href === '#atsiliepimai' ? 'atsiliepimai' :
+                       href === '#musu-klientai' ? 'logoStrip' :
+                       href === '#kontaktai' ? 'kontaktai' : '';
+      
+      // If we're not on the home page, navigate there first
+      if (pathname !== '/') {
+        // Store the target section in sessionStorage
+        sessionStorage.setItem('scrollTarget', sectionId);
+        // Use window.location for hard navigation to home page
+        window.location.href = '/';
+        return;
+      }
+      
+      // If we're already on the home page, just scroll
+      const section = document.getElementById(sectionId);
+      if (section) {
+        // Add a small delay to ensure smooth scrolling
+        setTimeout(() => {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    };
 
+    return (
+      <Link 
+        href={href} 
+        onClick={handleSectionClick}
+        className="text-black hover:text-gray-600 transition-colors duration-200 text-base py-2 touch-target-min font-bold tracking-wider"
+      >
+        {children}
+      </Link>
+    );
+  }
+  
+  // For regular links, use standard Next.js Link with prefetch
   return (
     <Link 
       href={href} 
-      onClick={handleClick}
+      prefetch={true}
       className="text-black hover:text-gray-600 transition-colors duration-200 text-base py-2 touch-target-min font-bold tracking-wider"
     >
       {children}
@@ -55,6 +66,7 @@ export default function Header() {
   const [showNotification, setShowNotification] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   // Handle scroll to section when navigating from another page
   useEffect(() => {
@@ -83,6 +95,13 @@ export default function Header() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  // Handle logo click for direct navigation
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    // Force a full page reload to the homepage
+    window.location.href = '/';
+  };
 
   return (
     <>
@@ -122,7 +141,12 @@ export default function Header() {
 
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/" className="hover:opacity-80 transition-opacity duration-200">
+              <a 
+                href="/"
+                onClick={handleLogoClick}
+                className="hover:opacity-80 transition-opacity duration-200"
+                aria-label="Go to homepage"
+              >
                 <Image
                   src="/media/elnislogoheader.png"
                   alt="Elnis"
@@ -131,7 +155,7 @@ export default function Header() {
                   className="w-[125px] h-[37px]"
                   priority
                 />
-              </Link>
+              </a>
             </div>
 
             {/* Right navigation elements - hidden on mobile */}
