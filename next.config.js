@@ -23,6 +23,8 @@ const nextConfig = {
         hostname: 'www.elnis.lt',
       },
     ],
+    domains: ['localhost'],
+    unoptimized: true,
   },
   reactStrictMode: true,
   redirects,

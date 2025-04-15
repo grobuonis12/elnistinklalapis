@@ -13,13 +13,10 @@ export const FooterComponent = () => {
             className="mb-6 inline-block hover:opacity-80 transition-opacity duration-200"
             aria-label="Go to homepage"
           >
-            <Image 
-              src="/media/elnislogofooter.png" 
+            <img 
+              src="/media/elnislogos/footerlogo.png" 
               alt="Elnis" 
-              width={140}
-              height={56}
               className="w-auto h-auto"
-              priority
             />
           </Link>
           <p className="text-white/60 text-sm mb-4 max-w-sm leading-relaxed">

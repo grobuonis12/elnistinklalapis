@@ -148,11 +148,11 @@ export default function Header() {
                 aria-label="Go to homepage"
               >
                 <Image
-                  src="/media/elnislogoheader.png"
-                  alt="Elnis"
-                  width={100}
+                  src="/media/elnislogos/headerlogo.png"
+                  alt="Elnis Logo"
+                  width={120}
                   height={40}
-                  className="w-[125px] h-[37px]"
+                  className="w-auto h-10"
                   priority
                 />
               </a>

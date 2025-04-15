@@ -40,7 +40,7 @@ export default function KontaktaiComponent({
           {/* Icon */}
           <div className="mb-3">
             <Image
-              src="/media/kontaktuminilogo.png"
+              src="/media/elnislogos/contactspic.png"
               alt="Kontaktai Mini Logo"
               width={64}
               height={64}

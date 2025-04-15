@@ -78,7 +78,7 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                   minHeight: "240px",
                   backgroundColor: testimonial.bgColor || "#FFDE59",
                   color: "black",
-                  boxShadow: "6px 6px 0px black, 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -4px rgba(0, 0, 0, 0.15)",
+                  boxShadow: "6px 6px 0px black, 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -4px rgba(0, 0, 0, 0.15)"
                 }}
               >
                 <h2 className="text-base md:text-lg font-bold uppercase mb-2 text-black dark:text-white">
@@ -118,7 +118,7 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
   return (
     <div id="atsiliepimai" className="relative w-full max-w-6xl mx-auto px-4 md:px-6">
       <LayoutGroup>
-        <div className={`flex justify-center ${(isMobile || isNarrow) ? '' : 'gap-6'} relative`}>
+        <div className={`flex justify-center ${(isMobile || isNarrow) ? '' : 'gap-6'} relative`} style={{ perspective: "1000px" }}>
           <AnimatePresence mode="wait">
             {visibleTestimonials.map((testimonial, index) => (
               <motion.div
@@ -163,7 +163,10 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
                     boxShadow: "6px 6px 0px black, 0 10px 15px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -4px rgba(0, 0, 0, 0.15)",
                     transform: "translateZ(0)",
                     backfaceVisibility: "hidden",
-                    isolation: "isolate"
+                    isolation: "isolate",
+                    transition: "all 0.3s ease-in-out",
+                    position: "relative",
+                    zIndex: 10
                   }}
                 >
                   <motion.h2 
@@ -197,36 +200,27 @@ export default function TestimonialSlider({ testimonials }: TestimonialSliderPro
             ))}
           </AnimatePresence>
         </div>
-  
-        <div className="flex justify-center mt-4 space-x-3">
+
+        {/* Navigation bubbles */}
+        <div className="flex justify-center items-center gap-3 mt-8">
           {[...Array(totalBubbles)].map((_, index) => {
             const isActive = (isMobile || isNarrow)
               ? currentIndex === index
               : Math.floor(currentIndex / 3) === index;
-            const activeTestimonial = getTestimonial(index * ((isMobile || isNarrow) ? 1 : 3));
             return (
-              <motion.div
+              <motion.button
                 key={index}
-                layout
-                initial={{ scale: 0.8 }}
-                animate={{ 
-                  scale: isActive ? 1.2 : 1,
-                }}
-                transition={{
-                  type: "spring",
-                  stiffness: 500,
-                  damping: 30,
-                }}
-                className={`h-2 md:h-3 w-2 md:w-3 rounded-full cursor-pointer border-2 border-black dark:border-white hover:scale-110 transition-colors duration-300 ${
-                  (isMobile || isNarrow) && isActive 
-                    ? 'bg-[#FFDE59]' 
-                    : isActive ? 'bg-black' : 'bg-white'
-                }`}
                 onClick={() => {
                   if (!isAnimating) {
                     setCurrentIndex((isMobile || isNarrow) ? index : index * 3);
                   }
                 }}
+                className={`h-3 md:h-4 rounded-full transition-all duration-300 ${
+                  isActive ? 'bg-black w-8 md:w-10' : 'bg-gray-300 w-3 md:w-4'
+                }`}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                aria-label={`Go to testimonial ${index + 1}`}
               />
             );
           })}

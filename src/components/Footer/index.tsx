@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CMSLink } from '@/components/Link';
 import { LatestPosts } from '@/components/LatestPosts';
 import type { Footer as FooterType } from '@/payload-types';
+import Image from 'next/image';
 
 // Mygtuko savybių sąsaja, naudojama žymų debesies mygtukams
 interface ButtonProps {
@@ -81,9 +82,14 @@ export const Footer: React.FC<FooterProps> = ({ footer }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto pt-16">
           {/* Logo and Description */}
           <div className="text-center md:text-left">
-            <Link href="/" className="inline-block mb-6">
-              <img src="/logo-white.svg" alt="Elnis" className="w-32" />
-            </Link>
+            <Image
+              src="/media/elnislogos/footerlogo.png"
+              alt="Elnis Logo"
+              width={120}
+              height={40}
+              className="w-auto h-10 mb-4"
+              priority
+            />
             <p className="text-white/60 text-sm mb-4 leading-relaxed">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus in libero justo. 
               Interdum et Phasellus in libero justo.

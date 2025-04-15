@@ -57,13 +57,10 @@ const FooterComponent = ({ footer }: { footer: Footer }) => {
           {/* Left side - Logo and description */}
           <div className="flex flex-col items-start">
             <Link href="/" className="mb-6 inline-block">
-              <Image 
-                src="/media/elnislogofooter.png" 
+              <img 
+                src="/media/elnislogos/footerlogo.png" 
                 alt="Elnis" 
-                width={140}
-                height={56}
                 className="w-auto h-auto"
-                priority
               />
             </Link>
             <p className="text-white/60 text-sm mb-4 max-w-sm leading-relaxed">

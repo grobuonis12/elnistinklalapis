@@ -212,6 +212,14 @@ export interface Page {
         logos?:
           | {
               logo: number | Media;
+              /**
+               * Alternative text for accessibility
+               */
+              alt: string;
+              /**
+               * Optional URL to the partner's website
+               */
+              url?: string | null;
               id?: string | null;
             }[]
           | null;
@@ -1121,6 +1129,8 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     logo?: T;
+                    alt?: T;
+                    url?: T;
                     id?: T;
                   };
               id?: T;
