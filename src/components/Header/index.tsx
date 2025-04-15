@@ -63,59 +63,26 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 };
 
 export default function Header() {
-  const [showNotification, setShowNotification] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
 
-  // Handle scroll to section when navigating from another page
-  useEffect(() => {
-    if (pathname === '/') {
-      // First, ensure we're at the top of the page
-      window.scrollTo(0, 0);
-
-      // Check for stored scroll target
-      const scrollTarget = sessionStorage.getItem('scrollTarget');
-      if (scrollTarget) {
-        // Clear the stored target
-        sessionStorage.removeItem('scrollTarget');
-        
-        // Add a delay to ensure the page is loaded and we start from the top
-        setTimeout(() => {
-          const section = document.getElementById(scrollTarget);
-          if (section) {
-            section.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 500); // Increased delay to ensure smooth transition
-      }
-    }
-  }, [pathname]);
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
-
-  // Handle logo click for direct navigation
-  const handleLogoClick = (e: React.MouseEvent) => {
+  // Handle logo click
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    // Force a full page reload to the homepage
-    window.location.href = '/';
+    
+    // If we're not on the home page, navigate there
+    if (pathname !== '/') {
+      router.push('/');
+      return;
+    }
+    
+    // If we're already on the home page, scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <>
-      {showNotification && (
-        <div className="w-full bg-pink-400 text-center py-2 text-sm relative">
-          <span>Pasinaudokite skaičiuokle ir sužinokite savo projekto kainą.</span>
-          <button 
-            onClick={() => setShowNotification(false)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-lg p-2 hover:opacity-75 touch-target-min"
-          >
-            &times;
-          </button>
-        </div>
-      )}
       <header className="w-full bg-white border-t-2 border-b-2 border-black">
         <nav className="max-w-4xl mx-auto px-4">
           <div className="flex justify-between h-16">
