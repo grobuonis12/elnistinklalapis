@@ -1,6 +1,6 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import type { Header } from '@/payload-types'
 import { Logo } from '@/components/Logo/Logo'
@@ -15,6 +15,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
+  const router = useRouter()
 
   useEffect(() => {
     setHeaderTheme(null)
@@ -26,7 +27,7 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
 
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    window.location.href = '/';
+    router.push('/');
   };
 
   return (

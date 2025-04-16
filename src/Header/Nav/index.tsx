@@ -1,17 +1,17 @@
 'use client'
 
 import React from 'react'
-
+import { useRouter } from 'next/navigation'
 import type { Header as HeaderType } from '@/payload-types'
-
 import { SearchIcon } from 'lucide-react'
 
 export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
   const navItems = data?.navItems || []
+  const router = useRouter()
 
   const handleLinkClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
-    window.location.href = href;
+    router.push(href);
   };
 
   return (

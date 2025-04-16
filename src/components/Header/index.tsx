@@ -73,7 +73,7 @@ export default function Header() {
     
     // If we're not on the home page, navigate there
     if (pathname !== '/') {
-      router.push('/');
+      window.location.href = '/';
       return;
     }
     
