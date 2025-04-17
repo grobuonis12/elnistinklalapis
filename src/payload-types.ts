@@ -197,17 +197,7 @@ export interface Page {
     | MediaBlock
     | ArchiveBlock
     | FormBlock
-    | {
-        title: string;
-        description: string;
-        /**
-         * Paste the AI-generated form embed code here
-         */
-        embedForm?: string | null;
-        id?: string | null;
-        blockName?: string | null;
-        blockType: 'internalPage';
-      }
+    | InternalPageBlock
     | {
         logos?:
           | {
@@ -808,6 +798,20 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InternalPageBlock".
+ */
+export interface InternalPageBlock {
+  title: string;
+  /**
+   * Pasirinkite pokalbių robotą šiam puslapiui
+   */
+  chatbot?: 'skubi-pagalba' | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'internalPage';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "WordPressBlogType".
  */
 export interface WordPressBlogType {
@@ -1113,15 +1117,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
-        internalPage?:
-          | T
-          | {
-              title?: T;
-              description?: T;
-              embedForm?: T;
-              id?: T;
-              blockName?: T;
-            };
+        internalPage?: T | InternalPageBlockSelect<T>;
         logoStrip?:
           | T
           | {
@@ -1277,6 +1273,16 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InternalPageBlock_select".
+ */
+export interface InternalPageBlockSelect<T extends boolean = true> {
+  title?: T;
+  chatbot?: T;
   id?: T;
   blockName?: T;
 }

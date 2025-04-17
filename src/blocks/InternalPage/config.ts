@@ -1,7 +1,15 @@
 import { Block } from 'payload';
+import { chatConfigs } from '@/components/Chat/config';
+
+// Convert chatConfigs to options array for the select field
+const chatbotOptions = Object.entries(chatConfigs).map(([value, config]) => ({
+  label: config.title,
+  value: value,
+}));
 
 export const InternalPage: Block = {
   slug: "internalPage",
+  interfaceName: "InternalPageBlock",
   labels: {
     singular: "Internal Page",
     plural: "Internal Pages",
@@ -14,17 +22,13 @@ export const InternalPage: Block = {
       required: true,
     },
     {
-      name: "description",
-      type: "textarea",
-      label: "Description",
-      required: true,
-    },
-    {
-      name: "embedForm",
-      type: "text",
-      label: "Embed Form Code",
+      name: "chatbot",
+      type: "select",
+      label: "Pokalbių robotas",
+      options: chatbotOptions,
       admin: {
-        description: "Paste the AI-generated form embed code here",
+        description: "Pasirinkite pokalbių robotą šiam puslapiui",
+        position: 'sidebar',
       },
     },
   ],

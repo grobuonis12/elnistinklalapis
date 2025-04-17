@@ -147,7 +147,13 @@ export function PageRenderer({ pageData }: PageRendererProps) {
           case "welcomeBlock":
             return <WelcomeBlockComponent key={index} title={block.title || ''} buttons={block.buttons || []} {...block} />;
           case "internalPage":
-            return <InternalPageComponent key={index} title={block.title} description={block.description} embedForm={block.embedForm} />;
+            return (
+              <InternalPageComponent 
+                key={index} 
+                title={block.title}
+                chatbot={block.chatbot}
+              />
+            );
           default:
             return null;
         }

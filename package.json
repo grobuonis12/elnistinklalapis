@@ -19,6 +19,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@n8n/chat": "^0.27.1",
     "@payloadcms/db-sqlite": "latest",
     "@payloadcms/live-preview-react": "latest",
     "@payloadcms/next": "latest",
