@@ -100,8 +100,19 @@ export const WordPressBlogComponent: React.FC<Props> = ({ posts = [], postsPerPa
     setLoadingMore(false);
   };
 
+  // Log the wordpressUrl for debugging
   React.useEffect(() => {
-    if (!posts.length) return;
+    console.log('WordPressBlog component initialized with URL:', wordpressUrl);
+    console.log('Initial posts count:', posts.length);
+  }, [wordpressUrl, posts.length]);
+
+  React.useEffect(() => {
+    if (!posts.length) {
+      console.log('No posts provided to WordPressBlog component');
+      return;
+    }
+    
+    console.log('Setting blog posts:', posts.length);
     setBlogPosts(posts);
     setDisplayedPosts(posts.slice(0, postsPerPage));
     setLoading(false);
