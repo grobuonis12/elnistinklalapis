@@ -805,7 +805,17 @@ export interface InternalPageBlock {
   /**
    * Pasirinkite pokalbių robotą šiam puslapiui
    */
-  chatbot?: 'skubi-pagalba' | null;
+  chatbot?:
+    | (
+        | 'skubi-pagalba'
+        | 'reikalinga-konsultacija'
+        | 'nauja-svetaine'
+        | 'pateikti-uzduoti'
+        | 'nauja-parduotuve'
+        | 'svetaines-atnaujinimas'
+        | 'prieziuros-paslauga'
+      )
+    | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'internalPage';
