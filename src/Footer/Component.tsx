@@ -38,7 +38,8 @@ const FooterComponent = ({ footer }: { footer: Footer }) => {
   useEffect(() => {
     const fetchLatestPosts = async () => {
       try {
-        const res = await fetch('https://www.elnis.lt/wp-json/wp/v2/posts?per_page=3&_embed');
+        const wordpressApiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'https://www.elnis.lt/wp-json/wp/v2/posts';
+        const res = await fetch(`${wordpressApiUrl}?per_page=3&_embed`);
         if (!res.ok) throw new Error('Failed to fetch posts');
         const data = await res.json();
         setPosts(data);

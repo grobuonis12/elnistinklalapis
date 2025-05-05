@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 async function getPosts(): Promise<Post[]> {
   try {
     // Use environment variable for the WordPress API URL
-    const wordpressApiUrl = process.env.WORDPRESS_API_URL || 'https://www.elnis.lt/wp-json/wp/v2/posts';
+    const wordpressApiUrl = process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'https://www.elnis.lt/wp-json/wp/v2/posts';
     
     console.log('Fetching posts from:', wordpressApiUrl); // Debug log
     
@@ -65,7 +65,7 @@ export default async function BlogPage() {
           <WordPressBlogComponent 
             blockType="wordPressBlog" 
             posts={posts} 
-            wordpressUrl={process.env.WORDPRESS_API_URL || 'https://www.elnis.lt/wp-json/wp/v2/posts'}
+            wordpressUrl={process.env.NEXT_PUBLIC_WORDPRESS_API_URL || 'https://www.elnis.lt/wp-json/wp/v2/posts'}
           />
         )}
       </div>
